@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=no" />
+    <title>BIMViewer</title>
+    <style>
+        .my-custom-ui {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 5;
+            margin: .3em;
+            padding: .3em;
+            font-size: 3em;
+            font-family: sans-serif;
+            background-color: rgba(255, 255, 255, 0.85);
+            border-radius: 8px;
+        }
+        
+        .my-custom-ui span {
+            color: red;
+        }
+    </style>
+    <!--您可能需要根据实际情况修改链接中的IP地址或端口号-->
+    <script type="text/javascript" src="http://mwc.i3yun.top/viewer/SippreepViewer.bundle.js"></script>
+</head>
+
+<body style="margin: 0px;">
+    <div class="my-custom-ui">
+        <!-- <div>Items selected: <span id="MySelectionValue">0</span></div> -->
+        <button id="Other1Elements">摄像头</button>
+        <button id="Other2Elements">消防设备</button>
+        <button id="ColorsElements">功能间</button>
+        <button id="SimulatedColors">模拟温度</button>
+    </div>
+    <div id="viewer1"></div>
+    <script src="index.js"></script>
+</body>
+
+</html>
