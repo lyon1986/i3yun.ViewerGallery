@@ -75,7 +75,7 @@ let SCENEID = "P2006230032";
                 btn1.innerText = "模式x- （默认的）";
                 btn1.onclick = () => {
                     api.enableMode("x");
-                    v.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.ROTATE);
+                    v.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.SELECT);
                 };
                 btn1.style.position = "absolute";
                 btn1.style.zIndex = "99";
@@ -89,7 +89,7 @@ let SCENEID = "P2006230032";
                 btn2.onclick = () => {
                     api.enableMode("x");
                     api.reverseCut();
-                    v.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.ROTATE);
+                    v.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.SELECT);
                 };
                 btn2.style.position = "absolute";
                 btn2.style.zIndex = "99";
@@ -101,7 +101,7 @@ let SCENEID = "P2006230032";
                 btn3.innerText = "模式y-";
                 btn3.onclick = () => {
                     api.enableMode("y");
-                    v.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.ROTATE);
+                    v.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.SELECT);
                 };
                 btn3.style.position = "absolute";
                 btn3.style.zIndex = "99";
@@ -114,7 +114,7 @@ let SCENEID = "P2006230032";
                 btn4.onclick = () => {
                     api.enableMode("y");
                     api.reverseCut();
-                    v.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.ROTATE);
+                    v.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.SELECT);
                 };
                 btn4.style.position = "absolute";
                 btn4.style.zIndex = "99";
@@ -128,7 +128,7 @@ let SCENEID = "P2006230032";
                 btn5.style.zIndex = "99";
                 btn5.onclick = () => {
                     api.enableMode("z");
-                    v.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.ROTATE);
+                    v.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.SELECT);
                 };
                 btn5.className = "my-custom-ui";
                 document.body.appendChild(btn5);
@@ -141,7 +141,7 @@ let SCENEID = "P2006230032";
                 btn6.onclick = () => {
                     api.enableMode("z");
                     api.reverseCut();
-                    v.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.ROTATE);
+                    v.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.SELECT);
                 };
                 btn6.className = "my-custom-ui";
                 document.body.appendChild(btn6);
@@ -153,7 +153,7 @@ let SCENEID = "P2006230032";
                 btn7.style.zIndex = "99";
                 btn7.onclick = () => {
                     api.clearCut();
-                    v.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.ROTATE);
+                    v.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.SELECT);
                 };
                 btn7.className = "my-custom-ui";
                 document.body.appendChild(btn7);
