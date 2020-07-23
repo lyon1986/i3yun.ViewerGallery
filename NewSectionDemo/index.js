@@ -1,8 +1,8 @@
-/// <reference path="../ref/SippreepViewer.d.ts" />
-/// <reference path="../ref/Sippreep.d.ts" />
-/// <reference path="../ref/Sippreep.Extensions.TidbLoader.d.ts" />
-/// <reference path="../ref/Sippreep.Extensions.EEPTools.d.ts" />
-/// <reference path="../ref/Sippreep.Extensions.PickPlane.d.ts" />
+// /// <reference path="../ref/SippreepViewer.d.ts" />
+// /// <reference path="../ref/Sippreep.d.ts" />
+// /// <reference path="../ref/Sippreep.Extensions.TidbLoader.d.ts" />
+// /// <reference path="../ref/Sippreep.Extensions.EEPTools.d.ts" />
+// /// <reference path="../ref/Sippreep.Extensions.PickPlane.d.ts" />
 /**
  * 包含四个插件
  *  
@@ -49,52 +49,60 @@ let PPex_async = Promise.all([model_async, viewer_async]).then(([model, viewer])
         }, 1000);
     })
 });
+var _eeptool;
 //绑定Tool按钮
-Promise.all([model_async, EEPToolExtension_async]).then(([_, v]) => {
-    v.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.ROTATE);
+Promise.all([model_async, EEPToolExtension_async]).then(([_, eeptool]) => {
+    _eeptool = eeptool;
+    eeptool.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.ROTATE);
     document.getElementById("toolMode1").onclick = () => {
-        v.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.PAN);
+        eeptool.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.PAN);
     }
     document.getElementById("toolMode2").onclick = () => {
-        v.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.ROTATE);
+        eeptool.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.ROTATE);
     }
     document.getElementById("toolMode3").onclick = () => {
-        v.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.ROAM);
+        eeptool.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.ROAM);
     }
 });
 //绑定剖分按钮
-Promise.all([viewer_async, PPex_async]).then(([viewer, api]) => {
+Promise.all([viewer_async, PPex_async]).then(([v, api]) => {
     document.getElementById("clearPlanes").onclick = () => {
-        viewer.setCutPlanes([]);
+        v.setCutPlanes([]);
     }
     document.getElementById("clearLastPlane").onclick = () => {
-        let ans = viewer.getCutPlanes();
+        let ans = v.getCutPlanes();
         ans.pop();
-        viewer.setCutPlanes(ans);
+        v.setCutPlanes(ans);
     }
     document.getElementById("planeMode1").onclick = () => {
+        _eeptool.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.SELECT);
         api.enableMode(Sippreep.Extensions.PickPlane.PickPlaneMode.PositiveDirectionOfX);
     }
     document.getElementById("planeMode2").onclick = () => {
+        _eeptool.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.SELECT);
         api.enableMode(Sippreep.Extensions.PickPlane.PickPlaneMode.NegativeDirectionOfX);
     }
     document.getElementById("planeMode3").onclick = () => {
+        _eeptool.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.SELECT);
         api.enableMode(Sippreep.Extensions.PickPlane.PickPlaneMode.PositiveDirectionOfY);
     }
     document.getElementById("planeMode4").onclick = () => {
+        _eeptool.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.SELECT);
         api.enableMode(Sippreep.Extensions.PickPlane.PickPlaneMode.NegativeDirectionOfY);
     }
     document.getElementById("planeMode5").onclick = () => {
+        _eeptool.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.SELECT);
         api.enableMode(Sippreep.Extensions.PickPlane.PickPlaneMode.PositiveDirectionOfZ);
     }
     document.getElementById("planeMode6").onclick = () => {
+        _eeptool.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.SELECT);
         api.enableMode(Sippreep.Extensions.PickPlane.PickPlaneMode.NegativeDirectionOfZ);
     }
     api.registerPlaneCallback((p) => {
         if (p) {
-            var planes = viewer.getCutPlanes();
+            var planes = v.getCutPlanes();
             planes.push(new THREE.Vector4(p.normal.x, p.normal.y, p.normal.z, p.constant));
-            viewer.setCutPlanes(planes);
+            v.setCutPlanes(planes);
         }
     });
 });
