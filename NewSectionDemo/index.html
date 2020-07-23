@@ -14,7 +14,7 @@
             z-index: 5;
             margin: .3em;
             padding: .3em;
-            font-size: 3em;
+            font-size: 1em;
             font-family: sans-serif;
             background-color: rgba(255, 255, 255, 0.85);
             border-radius: 8px;
@@ -27,6 +27,20 @@
 </head>
 
 <body style="margin: 0px;">
+    <div class="my-custom-ui">
+
+        <button id="toolMode1">平移</button>
+        <button id="toolMode2">旋转</button>
+        <button id="toolMode3">漫游</button>
+        <div><span id="MySelectionValue">左键 放置切面，  右键 取消一次切面， 中键 切换xyz模式，  左键按下时中键 翻转切面方向</span></div>
+        <button id="planeMode1">沿X轴正方向剖分</button>
+        <button id="planeMode2">沿X轴负方向剖分</button>
+        <button id="planeMode3">沿Y轴正方向剖分</button>
+        <button id="planeMode4">沿Y轴负方向剖分</button>
+        <button id="planeMode5">沿Z轴正方向剖分</button>
+        <button id="planeMode6">沿Z轴负方向剖分</button>
+        <button id="clearPlanes">清除剖分</button>
+    </div>
     <div id="viewer1"> </div>
     <script src="index.js"></script>
 </body>
