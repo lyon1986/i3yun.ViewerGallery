@@ -1,11 +1,3 @@
-/// <reference path="../ref/SippreepViewer.d.ts" />
-/// <reference path="../ref/Sippreep.d.ts" />
-/// <reference path="../ref/Sippreep.Extensions.TidbLoader.d.ts" />
-/// <reference path="../ref/Sippreep.Extensions.EEPTools.d.ts" />
-/// <reference path="../ref/Sippreep.Extensions.PickPlane.d.ts" />
-
-
-
 /**
  * 包含四个插件
  *  
@@ -69,6 +61,11 @@ Promise.all([model_async, EEPToolExtension_async]).then(([_, v]) => {
 Promise.all([viewer_async, PPex_async]).then(([viewer, api]) => {
     document.getElementById("clearPlanes").onclick = () => {
         viewer.setCutPlanes([]);
+    }
+    document.getElementById("clearLastPlane").onclick = () => {
+        let ans = viewer.getCutPlanes();
+        ans.pop();
+        viewer.setCutPlanes(ans);
     }
     document.getElementById("planeMode1").onclick = () => {
         api.enableMode(Sippreep.Extensions.PickPlane.PickPlaneMode.PositiveDirectionOfX);
