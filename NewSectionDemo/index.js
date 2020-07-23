@@ -1,3 +1,8 @@
+/// <reference path="../ref/SippreepViewer.d.ts" />
+/// <reference path="../ref/Sippreep.d.ts" />
+/// <reference path="../ref/Sippreep.Extensions.TidbLoader.d.ts" />
+/// <reference path="../ref/Sippreep.Extensions.EEPTools.d.ts" />
+/// <reference path="../ref/Sippreep.Extensions.PickPlane.d.ts" />
 /**
  * 包含四个插件
  *  
@@ -86,9 +91,11 @@ Promise.all([viewer_async, PPex_async]).then(([viewer, api]) => {
         api.enableMode(Sippreep.Extensions.PickPlane.PickPlaneMode.NegativeDirectionOfZ);
     }
     api.registerPlaneCallback((p) => {
-        var planes = viewer.getCutPlanes();
-        planes.push(new THREE.Vector4(p.normal.x, p.normal.y, p.normal.z, p.constant));
-        viewer.setCutPlanes(planes);
+        if (p) {
+            var planes = viewer.getCutPlanes();
+            planes.push(new THREE.Vector4(p.normal.x, p.normal.y, p.normal.z, p.constant));
+            viewer.setCutPlanes(planes);
+        }
     });
 });
 //美化操作
