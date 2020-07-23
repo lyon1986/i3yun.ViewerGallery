@@ -1,5 +1,5 @@
-// /// <reference path="../ref/SippreepViewer.d.ts" />
-// /// <reference path="../ref/Sippreep.d.ts" />
+/// <reference path="../ref/SippreepViewer.d.ts" />
+/// <reference path="../ref/Sippreep.d.ts" />
 // /// <reference path="../ref/Sippreep.Extensions.TidbLoader.d.ts" />
 // /// <reference path="../ref/Sippreep.Extensions.EEPTools.d.ts" />
 // /// <reference path="../ref/Sippreep.Extensions.PickPlane.d.ts" />
