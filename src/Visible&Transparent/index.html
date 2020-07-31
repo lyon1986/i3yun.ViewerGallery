@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="renderer" content="webkit">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=no" />
-    <title>进度模拟 - BIM轻量化平台</title>
+    <title>可见&透明 - BIM轻量化平台</title>
     <script type="text/javascript" src="http://39.105.69.54:6097/viewer/SippreepViewer.bundle.js"></script>
     <style>
         .my-custom-ui {
@@ -40,42 +40,27 @@
     <div class="my-custom-ui">
         <fieldset>
             <legend>场景配置</legend>
-            模型数据库<input id="DATABASE" type="text" value="http://39.105.69.54:6098" /> 场景
+            模型库类型
+            <select id="dbType">
+            <option selected>I3DB</option>
+            <option>I3Famliy</option>
+        </select> 地址
+            <input id="DATABASE" type="text" value="http://39.105.69.54:6098" /> ID
             <input id="SCENEID" type="text" value="P2006200001" />
             <button id="updateScene">加载场景</button>
             <div>场景状态: <span id="sceneState"></span></div>
-            <div> P2006200001 P2006230044 P2006230032</div>
         </fieldset>
         <fieldset>
-            <legend>1、进度数据</legend>
-            <input type="checkbox" id="RandomRange">对象完成随机
-            <input type="checkbox" id="RandomOrder">对象顺序随机
-            <button id="init">初始数据</button>
+            <legend>状态改变</legend>
+            <button id="objHide">隐藏/取消</button>
+            <button id="objTrans">透明/取消</button>
+            <button id="objRed">红色/取消</button>
+            <div>选中项: <span id="selectionState">0</span></div>
         </fieldset>
         <fieldset>
-            <legend>2.1、进度状态</legend>
-            <input type="checkbox" id="FinishedSetTransparent" />对象完成时透明
-            <div>
-                进度设置(0-100)<input id="RangeValue" type="number" min="0" max="100" step="1" value="0">
-            </div>
-        </fieldset>
-        <fieldset>
-            <legend>2.2、进度动画</legend>
-            显示频率(次/秒)
-            <select id="FPS">
-            <option>1</option>
-            <option>2</option>
-            <option selected>5</option>
-            <option>10</option>
-            <option>24</option>
-        </select> 总体时长(秒)
-            <select id="SumTime">
-            <option>10</option>
-            <option selected>20</option>
-            <option>60</option>
-        </select>
-            <button id="start">启动/暂停</button>
-            <div>状态: <span id="RangeState"></span></div>
+            <legend>对象定位</legend>
+            dbid或unique<input id="obj_value" type="text" value="" />
+            <button id="findObj">定位</button>
         </fieldset>
     </div>
     <div id="viewer1"> </div>

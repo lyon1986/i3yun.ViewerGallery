@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="renderer" content="webkit">
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=no" />
-    <title>进度模拟 - BIM轻量化平台</title>
+    <title>三维操控 - BIM轻量化平台</title>
     <script type="text/javascript" src="http://39.105.69.54:6097/viewer/SippreepViewer.bundle.js"></script>
     <style>
         .my-custom-ui {
@@ -46,36 +46,16 @@
             <div>场景状态: <span id="sceneState"></span></div>
             <div> P2006200001 P2006230044 P2006230032</div>
         </fieldset>
+
         <fieldset>
-            <legend>1、进度数据</legend>
-            <input type="checkbox" id="RandomRange">对象完成随机
-            <input type="checkbox" id="RandomOrder">对象顺序随机
-            <button id="init">初始数据</button>
-        </fieldset>
-        <fieldset>
-            <legend>2.1、进度状态</legend>
-            <input type="checkbox" id="FinishedSetTransparent" />对象完成时透明
-            <div>
-                进度设置(0-100)<input id="RangeValue" type="number" min="0" max="100" step="1" value="0">
-            </div>
-        </fieldset>
-        <fieldset>
-            <legend>2.2、进度动画</legend>
-            显示频率(次/秒)
-            <select id="FPS">
-            <option>1</option>
-            <option>2</option>
-            <option selected>5</option>
-            <option>10</option>
-            <option>24</option>
-        </select> 总体时长(秒)
-            <select id="SumTime">
-            <option>10</option>
-            <option selected>20</option>
-            <option>60</option>
-        </select>
-            <button id="start">启动/暂停</button>
-            <div>状态: <span id="RangeState"></span></div>
+            <legend>三维操控</legend>
+            <button class="ToolMode" data="0">选择</button>
+            <button class="ToolMode" data="1">平移</button>
+            <button class="ToolMode" data="3">旋转</button>
+            <button class="ToolMode" data="4">漫游</button>
+            <button class="ToolMode" data="6">环视</button>
+            <button class="ToolMode" data="8">框选</button>
+            <div>选中项: <span id="MySelectionValue">0</span></div>
         </fieldset>
     </div>
     <div id="viewer1"> </div>
