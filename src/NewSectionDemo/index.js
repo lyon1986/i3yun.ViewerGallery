@@ -32,17 +32,12 @@ Promise.all([viewer_async]).then(([viewer]) => {
         modelPromise.then((model) => {
             return new Promise((s, f) => {
                 model.getExternalIdMapping((e) => {
-                    var guidMap = new Map();
-                    var dbidMap = new Map();
+                    var count = 0;
                     for (var key in e) {
-                        if (key.length > 0) {
-                            guidMap.set(key, e[key]);
-                            dbidMap.set(e[key], e);
-                        }
+                        count++;
                     }
-                    sceneState.innerHTML = `${guidMap.size}个对象`;
-                    s(guidMap);
-                    PublishEvent("SceneLoaded");
+                    sceneState.innerHTML = `${count}个对象`;
+                    s(e);
                 }, f);
             });
         }).catch((e) => {
