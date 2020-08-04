@@ -1,23 +1,20 @@
-var host = "http://39.105.69.54:6098";
-var token = "eyJhbHQiOiJTSEExIiwidHlwIjoiSldUIn0=.eyJpc3MiOm51bGwsImV4cCI6bnVsbCwiYXVkIjpudWxsLCJpYXQiOm51bGwsIlVzZXJJRCI6Imx5b24wMDIiLCJUaW1lb3V0IjoiMjAzMS0xMS0xN1QwNjozODoyNi4wMDk0NzQxKzA4OjAwIiwiU2NvcGVzIjpbIlByb2plY3RSZWFkIl19.VbT+tp1FhvMADxzskWfhWVsT3CWmUdFNUIXFflEwrQOpiQnseUQKgxxOFpxCnIl6xdDI2uFtpJ0U5qxMw02P0ToSedsxYD/xhujPosrq2K41Q1R7hijmPQIeF99iR0HhIP4N3y9pm+nwiYOlHxI3OplVGDXN9s5kfMnbp/te+R8="
+var host = "http://bimdb.aisanwei.cn";
 var sceneID = "P2006200001";
 //创建三维视图
 var viewerPromise = SippreepViewer.CreateViewer(document.getElementById("viewer1"));
-//获取场景加载插件
-var TidbLoaderExtensionPromise = viewerPromise.then((viewer) => {
-    return viewer.loadExtension("Sippreep.Extensions.TidbLoader.TidbLoaderExtension");
+//加载模型
+var modelPromise = viewerPromise.then((viewer) => {
+    return new Promise((s, f) => {
+        if (viewer.model) {
+            viewer.unloadModel(viewer.model);
+        }
+        var url = `${host}/api/UserSpace/ViewFile/${sceneID}?path=/3d.svf`;
+        viewer.loadModel(url, null, s, f);
+    });
 });
 var Markup3DPromise = viewerPromise.then((viewer) => {
-        return viewer.loadExtension("Sippreep.Extensions.Markup.Markup3DExtension");
-    })
-    //加载模型
-var modelPromise = TidbLoaderExtensionPromise.then((v) => {
-    //let v1 = <any>v as Sippreep.Extensions.TidbLoader.TidbLoaderExtension;
-    var v1 = v;
-    v1.getConfig().host = host;
-    v1.getConfig().token = token
-    return v1.loadScene(sceneID);
-});
+    return viewer.loadExtension("Sippreep.Extensions.Markup.Markup3DExtension");
+})
 Promise.all([viewerPromise, modelPromise, Markup3DPromise]).then(([viewer, model, markup3d]) => {
     service = new Service();
     document.getElementById("AllElements").onclick = () => {
