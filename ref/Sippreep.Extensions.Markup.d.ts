@@ -65,6 +65,10 @@ declare namespace Sippreep {
                  */
                 offset?: THREE.Vector3;
                 /**
+                 * 内容框相对于偏移线终点的偏移量
+                 */
+                contentOffset?:THREE.Vector2;
+                /**
                  * 一些外观设置
                  */
                 appearance?: {

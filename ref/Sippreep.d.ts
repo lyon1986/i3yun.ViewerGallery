@@ -588,6 +588,10 @@ declare namespace Sippreep {
        *  @deprecated 此功能为私有属性，不建议使用
        */
       fragments: { fragId2dbId: Int32Array };
+      /**
+       * @deprecated 此功能为私有属性，不建议使用
+       */
+      db2ThemingColor: {[dbid:number]:undefined|THREE.Vector4}
       getWorldBounds(fragId: number, tempBounds: THREE.Box3): void;
       getMaterial(fragId: number): THREE.Material;
       setMaterial(fragId: number, material: THREE.Material): void;
@@ -773,7 +777,7 @@ declare namespace Sippreep {
        * getPropertyDb().executeUserFunction(userFunction);
        * 可以在运行时查看更多信息
        */
-      getPropertyDb(): any;
+      getPropertyDb(): PropDbLoader;
       isObjectTreeLoaded(): boolean;
       pageToModel(): void;
       pointInClip(): void;
@@ -785,6 +789,106 @@ declare namespace Sippreep {
        * @param {string} urn - Data that represents the geometry.
        */
       setUUID(urn: string): void;
+    }
+    interface PropDbLoader {
+      /**
+       * 在工作线程上提供的函数允许对工作线程执行代码PropertyDatabase实例。从提供的函数返回的值将用于解决返回的承诺。该函数必须命名为userFunction
+       * @param code
+       * @param userData
+       */
+      executeUserFunction(code: string | ((pdb: PropertyDatabase, userData?:any) => void),userData?:any): Promise<any>
+    }
+    /**
+     * https://autodeskviewer.com/viewers/latest/docs/PropertyDatabase.html#enumAttributes
+     */
+    interface PropertyDatabase {
+      /**
+       * Iterates over all properties for a given database id and invokes the supplied callback function.
+       */
+      enumObjectProperties: { dbId: number, cb: Function };
+      /**
+       * Given an object ID, returns the corresponding value IDs for the given list of attribute Ids.
+       * Takes into account instance_of inheritance of properties.
+       */
+      getPropertiesSubsetWithInheritance: { dbId: number, desiredAttrIds: Object, dstValIds: Object };
+      /**
+       * Obtains the number of database ids (dbIds) available.
+       * These ids range betwee 1 (inclusive) up to getObjectCount() (exclusive).
+       */
+      getObjectCount(): number;
+      /**
+       * Obtains the actual value of a property.
+       * @param attrId The attribute id
+       * @param valId The value id
+       * @param integerHint If true the return value will be casted to integer.
+       */
+      getAttrValue(attrId: number, valId: number, integerHint?: boolean): any;
+      /**
+       * Obtains all properties for a given database id.
+       * @param dbId 
+       * @param propFilter ["parent"]这样与原来没有时区别在于：属性中只有名字为"parent"的属性
+       * @param ignoreHidden 
+       * @param propIgnored 
+       */
+      getObjectProperties(dbId: number, propFilter?: string[], ignoreHidden?: boolean, propIgnored?: string[])
+      : { name: object, dbId: object, properties: object, externalId: object };
+      /**
+       * Obtains a map between each database id (dbId) and their corresponding external-id.
+       * The external-id is the identifier used by the source file.
+       * Example: A translated Revit file has a wall with dbId=1, but in Revit (desktop application) the identifier of that wall is "Wall-06-some-guid-here".
+       * @param extIdFilter Limits the result to only contain the ids in this array.
+       * @returns map from dbId into external-id.
+       */
+      getExternalIdMapping(extIdFilter?: number[]): object;
+      /**
+       * Given a text string, returns an array of individual words separated by white spaces.
+       * Will preserve white spacing within double quotes.
+       */
+      getSearchTerms(params?: any): any;
+      /**
+       * Searches the property database for a string.
+       * @param params 
+       */
+      bruteForceSearch(params?: any): any[];
+      /**
+       * Given a property name, it returns an array of ids that contain it.
+       * @param name 
+       */
+      bruteForceFind(name: any): any[];
+      /**
+       * Specialized function that returns:
+       * {
+       * 'layer-name-1': [id1, id2, ..., idN],
+       * 'layer-name-2': [idX, idY, ..., idZ],
+       * ...
+       * }
+       */
+      getLayerToNodeIdMapping(): any;
+      /**
+       * Unpacks an attribute value into all available components.
+       * @param attrId 	The attribute id.
+       */
+      getAttributeDef(attrId: number): object;
+      /**
+       * Invokes a callback function for each attribute-id in the model.
+       */
+      enumAttributes(cb: (attrId: number, attrDef: { name: string }, attrRaw: any) => void): void;
+      /**
+       * Iterates over the property database and finds all layers.
+       */
+      findLayers(): object;
+      /**
+       * Iterates over all database ids and invokes a callback function.
+       * @param cb 
+       * @param fromId 
+       * @param toId 
+       */
+      enumObjects(cb: Function, fromId: number, toId: number): any;
+      /**
+       * Checks whether an attirbute is hidden or not.
+       * @param attrId 
+       */
+      attributeHidden(attrId: number): boolean;
     }
 
     interface PropertyResult {
@@ -1170,6 +1274,33 @@ declare namespace Sippreep {
     class NullScreenModeDelegate extends ScreenModeDelegate {
       constructor(viewer: Viewer3D);
     }
+    class ViewerStateFilter {
+      cutplanes?: boolean;
+      objectSet?: boolean | Map<string, boolean>;
+      renderOptions?: boolean | Map<string, boolean>;
+      seedURN?: boolean;
+      viewport?: boolean | Map<string, boolean>
+    }
+    class ViewerStateData {
+      cutplanes: number[][];
+      objectSet: ViewerStateObjectSetData[];
+      renderOptions: {
+        ambientOcclusion: { enabled: boolean, intensity: number, radius: number };
+        appearance: { ambientShadow: boolean, antiAliasing: boolean, displayLines: boolean, ghostHidden: boolean, progressiveDisplay: boolean, swapBlackAndWhite: boolean };
+        environment: string;
+        toneMap: { exposure: number, lightMultiplier: number, method: number };
+      };
+      seedURN: string;
+      viewport: { aspectRatio: number, distanceToOrbit: number, eye: number[], fieldOfView: number, isOrthographic: boolean
+        , name: string, orthographicHeight: number, pivotPoint: number[], projection: string, target: number[], up: number[], worldUpVector: number[] }
+    }
+    class ViewerStateObjectSetData {
+      explodeScale: number;
+      hidden: number[];
+      id: number[];
+      idType: string;
+      isolated: number[]
+    }
 
     class Viewer3D {
       autocam: any;
@@ -1234,14 +1365,14 @@ declare namespace Sippreep {
        * 获取viewer当前状态
        * @param filter 
        */
-      getState(filter?: any): any;
+      getState(filter?: ViewerStateFilter): ViewerStateData;
       /**
        * 重置viewer状态为viewerState
        * @param viewerState 
        * @param filter 
        * @param immediate 
        */
-      restoreState(viewerState: any, filter?: any, immediate?: boolean): boolean;
+      restoreState(viewerState: any, filter?: ViewerStateFilter, immediate?: boolean): boolean;
       setView(viewNode: any/*BubbleNode*/, options: object): boolean;
       setViewFromArray(params: number[]): void;
       getCameraFromViewArray(paramas: number[]): THREE.Camera;

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=no" />
+    <title>三维标记 - BIM轻量化平台</title>
+    <script type="text/javascript" src="http://bimviewer.aisanwei.cn/viewer/SippreepViewer.bundle.js"></script>
+    <style>
+        .my-custom-ui {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 5;
+            margin: .3em;
+            padding: .3em;
+            font-size: 1em;
+            font-family: sans-serif;
+            background-color: rgba(255, 255, 255, 0.85);
+            border-radius: 8px;
+        }
+        
+        .my-markup3D {
+            position: absolute;
+            top: -8;
+            left: -8;
+            z-index: 5;
+            margin: .3em;
+            padding: .3em;
+            font-family: sans-serif;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            box-shadow: 4px 4px 2px rgb(0, 0, 0);
+        }
+        
+        .my-custom-ui span {
+            color: red;
+        }
+        
+        .ToolMode {
+            color: black;
+        }
+        
+        .PickMode {
+            color: red;
+        }
+    </style>
+</head>
+
+<body style="margin: 0px;">
+    <div id="lable" style="background-color:rgba(255, 255, 255, 0.8);">编号：${number}</div>
+    <div class="my-custom-ui">
+        <fieldset>
+            <legend>场景配置</legend>
+            模型数据库<input id="DATABASE" type="text" value="http://bimdb.aisanwei.cn" /> 场景
+            <input id="SCENEID" type="text" value="P2006200001" />
+            <button id="updateScene">加载场景</button>
+            <div>场景状态: <span id="sceneState"></span></div>
+            <div> P2006200001 P2006230044 P2006230032</div>
+        </fieldset>
+
+        <fieldset>
+            <legend>三维操控</legend>
+            <button class="ToolMode" data="0">选择</button>
+            <button class="ToolMode" data="1">平移</button>
+            <button class="ToolMode" data="3">旋转</button>
+            <button class="ToolMode" data="4">漫游</button>
+            <button class="ToolMode" data="6">环视</button>
+            <button class="ToolMode" data="8">框选</button>
+            <div>选中项: <span id="MySelectionValue">0</span></div>
+        </fieldset>
+        <fieldset>
+            <legend>三维标记</legend>
+            <button id="pickPoint">放置点标记</button>
+            <!-- <button id="pickPoint">放置线标记</button>
+            <button id="pickPoint">放置面标记</button> -->
+        </fieldset>
+    </div>
+    <div id="viewer1"> </div>
+    <script src="index.js"></script>
+</body>
+
+</html>
