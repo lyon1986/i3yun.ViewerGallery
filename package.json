@@ -1,5 +1,5 @@
 {
-    "name": "sdfadsfasfdasf",
+    "name": "viewergallery",
     "version": "1.0.0",
     "description": "",
     "main": "index.js",
@@ -8,7 +8,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://gitee.com/i3yun/ningboyanchang.git"
+        "url": "https://gitee.com/i3yun/ViewerGallery.git"
     },
     "keywords": [
         "demo",
@@ -18,6 +18,6 @@
     "license": "ISC",
     "devDependencies": {
         "@types/node": "^12.12.17",
-        "@types/three": "^0.84.4"
+        "@types/three": "0.84.4"
     }
 }
