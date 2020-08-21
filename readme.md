@@ -1,4 +1,7 @@
 # BIMViewer应用Demo
+## 文档
+
+二次开发文档(http://bimviewer.aisanwei.cn/docs/)
 
 ## 案例
 
