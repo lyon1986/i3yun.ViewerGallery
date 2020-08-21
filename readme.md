@@ -1,36 +1,34 @@
-# BIMViewer应用Demo
-## 文档
+# BIMViewer
 
-二次开发文档(http://bimviewer.aisanwei.cn/docs/)
+## 使用指南
 
-## 案例
+### [开发社区](https://gitee.com/i3yun/ViewerGallery)
+可通过Issue提交问题
 
-### [消防监控](http://i3yun.gitee.io/viewergallery/src/Tempratrue/index.html)
+### [二次开发文档](http://bimviewer.aisanwei.cn/docs/)
 
-[html源码](./src/Tempratrue/index.html)  
-[js源码](./src/Tempratrue/index.js)  
+## 示例库
 
-### [进度模拟](http://i3yun.gitee.io/viewergallery/src/ConstructionProgress/index.html)
+### [三维操控Demo](http://i3yun.gitee.io/viewergallery/src/EEPTool/index.html)  
 
-[html源码](./src/ConstructionProgress/index.html)  
-[js源码](./src/ConstructionProgress/index.js)  
-
-### [三维操控Demo](http://i3yun.gitee.io/viewergallery/src/EEPTool/index.html)
-
-[html源码](./src/EEPTool/index.html)  
-[js源码](./src/EEPTool/index.js)  
+[源码](./src/EEPTool)
 
 ### [新剖分Demo](http://i3yun.gitee.io/viewergallery/src/NewSectionDemo/index.html)
 
-[html源码](./src/NewSectionDemo/index.html)  
-[js源码](./src/NewSectionDemo/index.js)  
+[源码](./src/NewSectionDemo)  
 
 ### [隐藏&透明&变色](http://i3yun.gitee.io/viewergallery/src/Visible&Transparent/index.html)
 
-[html源码](./src/Visible&Transparent/index.html)  
-[js源码](./src/Visible&Transparent/index.js)  
+[源码](./src/Visible&Transparent)
 
 ### [三维标记](http://i3yun.gitee.io/viewergallery/src/MarkupDemo/index.html)
 
-[html源码](./src/MarkupDemo/index.html)  
-[js源码](./src/MarkupDemo/index.js)  
+[源码](./src/MarkupDemo)
+
+### [消防监控](http://i3yun.gitee.io/viewergallery/src/Tempratrue/index.html)
+
+[源码](./src/Tempratrue)  
+
+### [进度模拟](http://i3yun.gitee.io/viewergallery/src/ConstructionProgress/index.html)
+
+[源码](./src/ConstructionProgress)
