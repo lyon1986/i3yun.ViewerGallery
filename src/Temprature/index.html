@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=no" />
+    <title>温度监控 - BIM轻量化平台</title>
+    <style>
+        .my-custom-ui {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 5;
+            margin: .3em;
+            padding: .3em;
+            font-size: 3em;
+            font-family: sans-serif;
+            background-color: rgba(255, 255, 255, 0.85);
+            border-radius: 8px;
+        }
+        
+        .my-custom-ui span {
+            color: red;
+        }
+        
+        .my-markup3D {
+            position: absolute;
+            top: -8;
+            left: -8;
+            z-index: 5;
+            margin: .3em;
+            padding: .3em;
+            font-family: sans-serif;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            box-shadow: 4px 4px 2px rgb(0, 0, 0);
+        }
+    </style>
+    <script type="text/javascript" src="http://bimviewer.aisanwei.cn/viewer/SippreepViewer.bundle.js"></script>
+</head>
+
+<body style="margin: 0px;">
+    <!-- 三维标记模板 -->
+    <div id="label" class="my-markup3D">
+        <img src='data:image/png;base64,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'
+        />
+        <div>编号：${element} 类型：${typestring}</div>
+        <button onclick="alert('${element}')">显示</button>
+    </div>
+    </div>
+    <div class="my-custom-ui">
+
+        <div>选中项: <span id="MySelectionValue">0</span></div>
+        <div>
+            <button id="AllElements">所有显示</button>
+            <button id="BuildingElements">建筑(透明/显示)</button>
+            <button id="Level1" data="{max:4.46,min:-14.57}">一层</button>
+            <button id="Level2" data="{max:-10.67,min:0.55}">二层</button>
+        </div>
+        <button id="Other2Elements" data="[2231, 2979, 2991, 2996, 3003]">
+            消防设备(关闭/显示)</button>
+        <button id="ColorsElements" data="[1564, 1565, 1566, 1567, 1568, 1569, 1570, 1571, 1572, 1573, 1574, 1575, 1576]">
+            功能间(关闭/显示)</button>
+
+        <div>
+            <button id="SimulatedColors">功能间温度(模拟/停止)</button>
+        </div>
+        <div><button id="ShowMark3D">三维标记(显示/关闭)</button></div>
+        <div>
+            <button id="saveState">保存视角</button>
+            <button id="loadState" data="eyJ2aWV3cG9ydCI6eyJuYW1lIjoiIiwiZXllIjpbLTg0LjgyMjM1OTAxNDI4MTkxLC00Mi43Mzk1MzE5NDk4MDQyMywxMzAuNDM3NDM0MTE5MTc4MDhdLCJ0YXJnZXQiOlstMTEuOTU2NDgxMTE1MDEwNTMzLC03LjQ1MDk2OTI5MDM1MzM5MiwxNi43NjU5MTY1NDc4NDI2MDhdLCJ1cCI6WzAuNzMzMDc3MTY4Nzg3MjU2NiwwLjM1NTAyNTQyOTYwODEyMzgzLDAuNTgwMTMzNDQwNjI3NjA4N10sIndvcmxkVXBWZWN0b3IiOlswLDAsMV0sInBpdm90UG9pbnQiOls4LjU0NzIzMTY0NDMwMDA0MSwyMy4yMjgwMjI1MDU0NDQxNDQsNDAuMTU5MjY4MzUxMjg2NDZdLCJkaXN0YW5jZVRvT3JiaXQiOjEzOC45NjQ5MDE1NTY4NDQwNCwiYXNwZWN0UmF0aW8iOjIuMDg0NjkwNTUzNzQ1OTI4NCwicHJvamVjdGlvbiI6InBlcnNwZWN0aXZlIiwiaXNPcnRob2dyYXBoaWMiOmZhbHNlLCJmaWVsZE9mVmlldyI6NDV9fQ==">恢复视角</button>
+        </div>
+    </div>
+    <div id="viewer1"></div>
+    <script src="index.js"></script>
+</body>
+
+</html>

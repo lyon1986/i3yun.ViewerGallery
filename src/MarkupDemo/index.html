@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=no" />
     <title>三维标记 - BIM轻量化平台</title>
     <script type="text/javascript" src="http://bimviewer.aisanwei.cn/viewer/SippreepViewer.bundle.js"></script>
+    <!-- <script type="text/javascript" src="../../dist/release/viewer/SippreepViewer.bundle.js"></script> -->
     <style>
         .my-custom-ui {
             position: absolute;
@@ -50,15 +51,14 @@
 </head>
 
 <body style="margin: 0px;">
-    <div id="lable" style="background-color:rgba(255, 255, 255, 0.8);">编号：${number}</div>
+
     <div class="my-custom-ui">
         <fieldset>
             <legend>场景配置</legend>
-            模型数据库<input id="DATABASE" type="text" value="http://bimdb.aisanwei.cn" /> 场景
-            <input id="SCENEID" type="text" value="P2006200001" />
+            数据库地址<input id="DATABASE" type="text" value="http://bimdb.aisanwei.cn" />
+            <br> 场景编号<input id="SCENEID" type="text" value="P2006200001" />
             <button id="updateScene">加载场景</button>
             <div>场景状态: <span id="sceneState"></span></div>
-            <div> P2006200001 P2006230044 P2006230032</div>
         </fieldset>
 
         <fieldset>
@@ -69,13 +69,30 @@
             <button class="ToolMode" data="4">漫游</button>
             <button class="ToolMode" data="6">环视</button>
             <button class="ToolMode" data="8">框选</button>
-            <div>选中项: <span id="MySelectionValue">0</span></div>
+            <br> 选中项: <span id="MySelectionValue">0</span>
         </fieldset>
         <fieldset>
             <legend>三维标记</legend>
-            <button id="pickPoint">放置点标记</button>
-            <!-- <button id="pickPoint">放置线标记</button>
-            <button id="pickPoint">放置面标记</button> -->
+            <button id="exportTo2">自定义导出</button>
+            <button id="importTo2">自定义导入</button>
+            <br> Json数据<input id="jsonData" />
+
+            <br> <button id="newPoint">放置点标记</button>
+            <button id="newPolyline">放置线标记</button>
+            <button id="newPolygon">放置面标记</button>
+            <br> 指定编号<input id="selectNames" />
+            <button id="fitViewMarkup">查看标记</button>
+            <br> 标记连线<input id="item_offset" />
+            <br> 内容偏移<input id="item_contentOffset" />
+            <br> 标记颜色<input id="item_anchorColor" />
+            <br> 连线颜色<input id="item_offsetColor" />
+            <br><button id="updateMarkup">更新标记</button>
+            <button id="deleteMarkup">删除标记</button>
+        </fieldset>
+        <div id="lable" style="background-color:rgba(255, 255, 255, 0.8);display: none">编号：${number}</div>
+        <fieldset>
+            <legend>辅助功能</legend>
+            <button id="setTrans">模型透明</button>
         </fieldset>
     </div>
     <div id="viewer1"> </div>

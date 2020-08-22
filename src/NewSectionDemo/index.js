@@ -44,7 +44,7 @@ Promise.all([viewer_async]).then(([viewer]) => {
             sceneState.innerHTML = JSON.stringify(e);
         });
     };
-
+    document.getElementById("updateScene").click();
 });
 //三维操控
 let toolExtensionPromise = viewer_async.then((viewer) => {

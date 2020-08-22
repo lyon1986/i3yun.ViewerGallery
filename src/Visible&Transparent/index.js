@@ -93,32 +93,35 @@ Promise.all([viewerPromise, servicePromise]).then(([viewer, service]) => {
 });
 //辅助功能
 Promise.all([viewerPromise, servicePromise]).then(([viewer, service]) => {
-    function isInteger(obj) {
-        return obj % 1 === 0
-    }
-    document.getElementById("findObj").onclick = () => {
-        var ID = document.getElementById("obj_value").value;
+        function isInteger(obj) {
+            return obj % 1 === 0
+        }
+        document.getElementById("findObj").onclick = () => {
+            var ID = document.getElementById("obj_value").value;
 
-        service.getObjs().then(e => {
-            if (isInteger(ID)) {
-                var dbid = parseInt(ID);
-                // for (var key in e) {
-                //     service.setHide(e[key], e[key] != dbid);
-                // }
-                viewer.select(dbid);
-                viewer.fitToView([dbid]);
+            service.getObjs().then(e => {
+                if (isInteger(ID)) {
+                    var dbid = parseInt(ID);
+                    // for (var key in e) {
+                    //     service.setHide(e[key], e[key] != dbid);
+                    // }
+                    viewer.select(dbid);
+                    viewer.fitToView([dbid]);
 
-            } else {
-                // for (var key in e) {
-                //     service.setHide(e[key], key != ID);
-                // }
-                viewer.select(e[ID]);
-                viewer.fitToView([e[ID]]);
-            }
-        });
-    }
-})
-
+                } else {
+                    // for (var key in e) {
+                    //     service.setHide(e[key], key != ID);
+                    // }
+                    viewer.select(e[ID]);
+                    viewer.fitToView([e[ID]]);
+                }
+            });
+        }
+    })
+    /**
+     * 
+     * @param {Sippreep.Viewing.Viewer3D} viewer 
+     */
 function Service(viewer) {
     /**
      * 加载模型
