@@ -87,3 +87,7 @@ BIM模型数据可视化组件（viewer）是……。
     ```
 
 [查看最小样例](./src/MinimumSample)
+
+## 尾部
+[![Fork me on Gitee](https://gitee.com/i3yun/ViewerGallery/widgets/widget_6.svg?color=76cf6e)](https://gitee.com/i3yun/ViewerGallery)  
+[![i3yun/ViewerGallery](https://gitee.com/i3yun/ViewerGallery/widgets/widget_card.svg?colors=4183c4,ffffff,ffffff,e3e9ed,666666,9b9b9b)](https://gitee.com/i3yun/ViewerGallery)  
