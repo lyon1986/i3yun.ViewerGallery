@@ -53,8 +53,6 @@ BIM模型数据可视化组件（viewer）是……。
 
 ## 四步开始使用
 
-[查看最小样例](./src/MinimumSample)
-
 1. 在html文件中添加SippreepViewer.bundle.js和一个div
 
     ``` html
@@ -87,3 +85,5 @@ BIM模型数据可视化组件（viewer）是……。
     return v1.loadScene(sceneID);
     });
     ```
+
+[查看最小样例](./src/MinimumSample)
