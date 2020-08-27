@@ -1,4 +1,4 @@
-/// <reference types="THREE" />
+/// <reference path="THREE.d.ts" />
 
 declare namespace Sippreep {
   namespace Viewing {

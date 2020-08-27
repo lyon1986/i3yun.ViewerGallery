@@ -1,8 +1,9 @@
 {
     "name": "viewergallery",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "description": "",
-    "main": "index.js",
+    "main": "",
+    "types": "./ref/SippreepViewer.d.ts",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
@@ -15,8 +16,5 @@
         "bim"
     ],
     "author": "lyon_en@163.com",
-    "license": "ISC",
-    "devDependencies": {
-        "@types/node": "^12.12.17"
-    }
+    "license": "ISC"
 }
