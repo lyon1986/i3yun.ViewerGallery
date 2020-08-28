@@ -50,6 +50,8 @@ BIM模型数据可视化组件（viewer）是……。
     [源码](./src/Temprature)  
 6. [进度模拟](http://i3yun.gitee.io/viewergallery/src/ConstructionProgress/index.html)  
     [源码](./src/ConstructionProgress)
+7. [模型过滤](http://i3yun.gitee.io/viewergallery/src/ModelFilterDemo/index.html)  
+    [源码](./src/ModelFilterDemo)
 
 ## 四步开始使用
 
