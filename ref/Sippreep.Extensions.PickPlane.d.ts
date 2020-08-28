@@ -1,6 +1,8 @@
 declare namespace Sippreep {
     namespace Extensions {
         namespace PickPlane {
+
+
             /**
              * 拾取面插件
              */
@@ -17,6 +19,12 @@ declare namespace Sippreep {
                  * @param callback 
                  */
                 registerPlaneCallback(callback?: (plane: THREE.Plane) => void): void;
+                /**
+                 * 配置面信息:正反面颜色,正反面透明度等
+                 * @param config 
+                 * @returns 更新后的配置信息
+                 */
+                configPlane(config?: PlaneConfig): PlaneConfig;
             }
             /**拾取面模式 */
             export enum PickPlaneMode {
@@ -50,6 +58,16 @@ declare namespace Sippreep {
                  * 碰撞面
                  */
                 HitFace,
+                /**
+                 * 碰撞面反面
+                 */
+                NegativeDirectionOfHitFace,
+            }
+            export type PlaneConfig = {
+                frontColor?: THREE.Color, backColor?: THREE.Color, borderColor?: THREE.Color,
+                frontOpacity?: number, backOpacity?: number,
+                planeSize?: number,
+                //[k: string]: any
             }
         }
     }

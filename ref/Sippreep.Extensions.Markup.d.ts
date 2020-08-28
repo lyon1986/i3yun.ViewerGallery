@@ -23,15 +23,15 @@ declare namespace Sippreep {
                 /**
                  * 导出JSON对象
                  */
-                exportItems(): any;
+                exportItems(): string;
                 /**
                  * 导入JSON对象
                  * @param data 
                  */
-                importItems(data: any): void;
+                importItems(data: string): void;
 
                 /**
-                 * 获取空间大小
+                 * 获取 热点、偏移线和依附的部件 的空间盒子
                  */
                 getBox(item: IMarkup3D): THREE.Box3;
             }
@@ -117,13 +117,13 @@ declare namespace Sippreep {
              */
             export class Point {
                 value: THREE.Vector3
-                constructor(v?: THREE.Vector3)
+
             }
             /**
              * 线，是一个有序路径的集合
              */
             export class Polyline {
-                constructor(v?: THREE.Vector3[])
+
                 /**
                  * 有序点的集合（至少需要2个点）
                  */
@@ -134,7 +134,7 @@ declare namespace Sippreep {
              * 
              */
             export class Polygon {
-                constructor(v?: THREE.Vector3[])
+
                 /**
                  * 有序点的集合（围绕第一个点组成的面，至少需要3个点）
                  */

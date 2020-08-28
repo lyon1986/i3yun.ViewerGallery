@@ -1,5 +1,3 @@
-/// <reference path="THREE.d.ts" />
-
 declare namespace Sippreep {
   namespace Viewing {
     enum ErrorCodes {
@@ -591,7 +589,7 @@ declare namespace Sippreep {
       /**
        * @deprecated 此功能为私有属性，不建议使用
        */
-      db2ThemingColor: {[dbid:number]:undefined|THREE.Vector4}
+      db2ThemingColor: { [dbid: number]: undefined | THREE.Vector4 }
       getWorldBounds(fragId: number, tempBounds: THREE.Box3): void;
       getMaterial(fragId: number): THREE.Material;
       setMaterial(fragId: number, material: THREE.Material): void;
@@ -796,7 +794,7 @@ declare namespace Sippreep {
        * @param code
        * @param userData
        */
-      executeUserFunction(code: string | ((pdb: PropertyDatabase, userData?:any) => void),userData?:any): Promise<any>
+      executeUserFunction(code: string | ((pdb: PropertyDatabase, userData?: any) => void), userData?: any): Promise<any>
     }
     /**
      * https://autodeskviewer.com/viewers/latest/docs/PropertyDatabase.html#enumAttributes
@@ -831,7 +829,22 @@ declare namespace Sippreep {
        * @param propIgnored 
        */
       getObjectProperties(dbId: number, propFilter?: string[], ignoreHidden?: boolean, propIgnored?: string[])
-      : { name: object, dbId: object, properties: object, externalId: object };
+        : {
+          name: object,
+          dbId: object,
+          properties: Array<{
+            attributeName: string,
+            displayCategory: string,
+            displayName: string,
+            displayValue: string,
+            hidden: any,
+            precision: any,
+            type: any,
+            units: any,
+            [k: string]: any
+          }>,
+          externalId: object
+        };
       /**
        * Obtains a map between each database id (dbId) and their corresponding external-id.
        * The external-id is the identifier used by the source file.
@@ -903,6 +916,7 @@ declare namespace Sippreep {
       displayCategory: string;
       displayName: string;
       displayValue: string;
+      precision: number;
       hidden: boolean;
       type: number;
       units: string;
@@ -1291,8 +1305,10 @@ declare namespace Sippreep {
         toneMap: { exposure: number, lightMultiplier: number, method: number };
       };
       seedURN: string;
-      viewport: { aspectRatio: number, distanceToOrbit: number, eye: number[], fieldOfView: number, isOrthographic: boolean
-        , name: string, orthographicHeight: number, pivotPoint: number[], projection: string, target: number[], up: number[], worldUpVector: number[] }
+      viewport: {
+        aspectRatio: number, distanceToOrbit: number, eye: number[], fieldOfView: number, isOrthographic: boolean
+        , name: string, orthographicHeight: number, pivotPoint: number[], projection: string, target: number[], up: number[], worldUpVector: number[]
+      }
     }
     class ViewerStateObjectSetData {
       explodeScale: number;
