@@ -1,10 +1,12 @@
 {
     "name": "@i3yun/viewergallery",
-    "version": "1.0.2",
+    "version": "1.0.5",
     "description": "",
     "main": "",
-    "types": "./ref/SippreepViewer.d.ts",
+    "types": "./ref/index.d.ts",
     "scripts": {
+        "addUser": "npm adduser --registry http://registry.npmjs.org",
+        "publish": "npm publish --registry http://registry.npmjs.org",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {

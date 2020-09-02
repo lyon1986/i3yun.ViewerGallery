@@ -1,3 +1,4 @@
+/// <reference path="THREE.d.ts" />
 declare namespace Sippreep {
   namespace Viewing {
     enum ErrorCodes {
