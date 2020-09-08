@@ -88,7 +88,11 @@ BIM模型数据可视化组件（viewer）是……。
     });
     ```
 
-[查看最小样例](./src/MinimumSample)
+额外1 [查看最小样例](./src/MinimumSample)  
+额外2 一个npm包，用于类型提示.安装命令：  
+```npm
+npm i siiri-viewer-dts
+```
 
 ## 尾部
 [![Fork me on Gitee](https://gitee.com/i3yun/ViewerGallery/widgets/widget_6.svg?color=76cf6e)](https://gitee.com/i3yun/ViewerGallery)  
