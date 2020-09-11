@@ -1,7 +1,7 @@
 {
-    "name": "@i3yun/viewergallery",
+    "name": "siiri-viewer-gallery",
     "version": "1.0.5",
-    "description": "",
+    "description": "BIM轻量化平台是一个互联网三维可视化解决方案。包括BIM轻量化引擎和业务组件。",
     "main": "",
     "types": "./ref/index.d.ts",
     "scripts": {
