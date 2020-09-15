@@ -36,6 +36,14 @@ var objectsPromise = modelPromise.then((m) => {
 Promise.all([viewerPromise, modelPromise, objectsPromise, Markup3DPromise]).then(([viewer, model, objects, markup3d]) => {
         viewerHelper = new ViewerHelper(viewer, model, objects);
         service = new Service();
+        document.getElementById("hidePanel").onclick = () => {
+            document.getElementById("panel1").style.display = 'none';
+            document.getElementById("panel2").style.display = 'block';
+        }
+        document.getElementById("showPanel").onclick = () => {
+            document.getElementById("panel1").style.display = 'block';
+            document.getElementById("panel2").style.display = 'none';
+        }
         document.getElementById("AllElements").onclick = () => {
             viewerHelper.SetVisible(true);
             viewerHelper.SetLevel();
