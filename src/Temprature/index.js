@@ -1,6 +1,21 @@
 var host = "http://bimdb.aisanwei.cn";
 var token = "eyJhbHQiOiJTSEExIiwidHlwIjoiSldUIn0=.eyJpc3MiOm51bGwsImV4cCI6bnVsbCwiYXVkIjpudWxsLCJpYXQiOm51bGwsIlVzZXJJRCI6Imx5b24wMDIiLCJUaW1lb3V0IjoiMjAzMS0xMS0xN1QwNjozODoyNi4wMDk0NzQxKzA4OjAwIiwiU2NvcGVzIjpbIlByb2plY3RSZWFkIl19.VbT+tp1FhvMADxzskWfhWVsT3CWmUdFNUIXFflEwrQOpiQnseUQKgxxOFpxCnIl6xdDI2uFtpJ0U5qxMw02P0ToSedsxYD/xhujPosrq2K41Q1R7hijmPQIeF99iR0HhIP4N3y9pm+nwiYOlHxI3OplVGDXN9s5kfMnbp/te+R8="
 var sceneID = "P2006200001";
+var ID = "P2006090021";
+var AddIDs = ['P2006090001', //500
+    'P2006090012', 'P2006090013', 'P2006090014', 'P2006090015', 'P2006090016', 'P2006090017', //501
+    'P2006090002', //502
+    'P2006090004', //503
+    'P2006090006', //504
+    'P2006090007', //505
+    'P2007210004', //506
+    'P2006090010', //507
+    'P2006090011', //508
+    'P2006090018', //509
+    'P2006090019', //510
+    'P2006090020', //511
+    'P2006090022', 'P2006090023', 'P2006090024', 'P2006090025'
+];
 //创建三维视图
 var viewerPromise = SippreepViewer.CreateViewer(document.getElementById("viewer1"));
 //获取场景加载插件
@@ -17,12 +32,21 @@ var Markup3DPromise = viewerPromise.then((viewer) => {
  * 加载模型
  * @type {Promise<Sippreep.Viewing.Model>}
  */
-var modelPromise = TidbLoaderExtensionPromise.then((v) => {
+var modelPromise = viewerPromise.then((v) => {
     //let v1 = <any>v as Sippreep.Extensions.TidbLoader.TidbLoaderExtension;
-    var v1 = v;
-    v1.getConfig().host = host;
-    v1.getConfig().token = token
-    return v1.loadScene(sceneID);
+    // var v1 = v;
+    // v1.getConfig().host = host;
+    // v1.getConfig().token = token
+    // return v1.loadScene(sceneID);
+    let viewer = v;
+    return new Promise((s, f) => {
+        if (viewer.model) {
+            viewer.unloadModel(viewer.model);
+        }
+        var url = `${host}/api/UserSpace/ViewFile/${ID}?path=/3d.svf`;
+        //viewer.loadModel(url, null, s, f);
+        viewer.loadModel(url, { globalOffset: { x: 0, y: 0, z: 0 } }, s, f);
+    });
 });
 /**
  * 加载模型
@@ -34,8 +58,28 @@ var objectsPromise = modelPromise.then((m) => {
     });
 });
 Promise.all([viewerPromise, modelPromise, objectsPromise, Markup3DPromise]).then(([viewer, model, objects, markup3d]) => {
-        viewerHelper = new ViewerHelper(viewer, model, objects);
-        service = new Service();
+        let objectIDs = [];
+        for (let name in objects) {
+            objectIDs.push(objects[name]);
+        }
+        let SelectArray = (list, select) => {
+            let list2 = [];
+            for (let item of list) {
+                list2.push(select(item));
+            }
+            return list2;
+        }
+        let CombieArray = (list, combie) => {
+            let x;
+            for (let item of list) {
+                if (x == undefined) {
+                    x = item;
+                } else {
+                    x = combie(x, item);
+                }
+            }
+            return x;
+        }
         document.getElementById("hidePanel").onclick = () => {
             document.getElementById("panel1").style.display = 'none';
             document.getElementById("panel2").style.display = 'block';
@@ -44,10 +88,71 @@ Promise.all([viewerPromise, modelPromise, objectsPromise, Markup3DPromise]).then
             document.getElementById("panel1").style.display = 'block';
             document.getElementById("panel2").style.display = 'none';
         }
-        document.getElementById("AllElements").onclick = () => {
-            viewerHelper.SetVisible(true);
+
+        E('modelAll').onclick = (e) => {
             viewerHelper.SetLevel();
             viewer.fitToView();
+        };
+        var modeBTs = document.getElementsByClassName("model");
+        let loadModel = (url) => {
+            return new Promise((s, f) => {
+                viewer.loadModel(url, {
+                    placementTransform: new THREE.Matrix4(),
+                    globalOffset: { x: 0, y: 0, z: 0 }
+                }, s, f);
+            });
+        }
+        let modelMap = new Map();
+        for (let i = 0; i < modeBTs.length; i++) {
+            modeBTs[i].onclick = (e) => {
+                    let data = e.target.getAttribute("data");
+                    let modelData = modelMap.get(data);
+                    if (!modelData) {
+                        modelData = {};
+                        modelMap.set(data, modelData);
+
+                        let modelPromises = [];
+                        let AddIDs = eval(`(${data})`);
+                        for (let id of AddIDs) {
+                            modelPromises.push(loadModel(`${host}/api/UserSpace/ViewFile/${id}?path=/3d.svf`));
+                        }
+                        e.target.innerText += "."
+                        Promise.all(modelPromises).then(v => {
+                            e.target.innerText += "."
+                            modelData.models = v;
+                            modelData.box = CombieArray(SelectArray(v, (m) => m.getBoundingBox()), (x, y) => x.union(y));
+                            viewer.navigation.fitBounds(false, modelData.box);
+                        });
+                        let loaded = SelectArray(modelPromises, (mp) => {
+                            return mp.then(m => {
+                                return new Promise((s, f) => {
+                                    viewer.addEventListener(Sippreep.Viewing.GEOMETRY_LOADED_EVENT, (e) => {
+                                        if (m == e.model)
+                                            s(m);
+                                    });
+                                });
+                            })
+                        })
+
+                        Promise.all(loaded).then(v => {
+                            e.target.innerText += "。"
+                        });
+
+                    }
+                    if (modelData.models) {
+                        viewer.navigation.fitBounds(false, modelData.box);
+                        E('level').click();
+                    }
+                }
+                //modeBTs[i].click();
+        }
+        viewerHelper = new ViewerHelper(viewer, model, objects);
+        service = new Service();
+
+        document.getElementById("AllElements").onclick = () => {
+            viewerHelper.SetLevel();
+            viewerHelper.SetVisible(true);
+            viewer.navigation.fitBounds(false, model.getBoundingBox());
         }
         document.getElementById("BuildingElements").onclick = (e) => {
             var buildingElements = viewerHelper.GetOther([].concat(service.Other2Elements, service.ColorsElements));
@@ -57,17 +162,14 @@ Promise.all([viewerPromise, modelPromise, objectsPromise, Markup3DPromise]).then
             var buildingVisible = e.target.state1 = e.target.state1 ? false : true;
             viewerHelper.SetTrans(buildingVisible, buildingElements);
         }
-        document.getElementById("Level1").onclick = (e) => {
-            var data = e.target.getAttribute("data");
-            var level = eval(`(${data})`);
-            viewerHelper.SetLevel(level);
-            viewer.fitToView();
-        }
-        document.getElementById("Level2").onclick = (e) => {
-            var data = e.target.getAttribute("data");
-            var level = eval(`(${data})`);
-            viewerHelper.SetLevel(level);
-            viewer.fitToView();
+        var modeBTs = document.getElementsByClassName("level");
+        for (let i = 0; i < modeBTs.length; i++) {
+            modeBTs[i].onclick = (e) => {
+                var data = e.target.getAttribute("data");
+                var level = eval(`(${data})`);
+                viewerHelper.SetLevel(level);
+                //viewer.fitToView();
+            }
         }
         document.getElementById("Other2Elements").onclick = (e) => {
             var visible = e.target.state1 = e.target.state1 ? false : true;
@@ -83,27 +185,32 @@ Promise.all([viewerPromise, modelPromise, objectsPromise, Markup3DPromise]).then
             //document.getElementById("ColorsElements").click();
             service.SimulatedColors();
             viewerHelper.SetColor(null);
+            E('level2').click();
         }
         document.getElementById("ShowMark3D").onclick = () => {
             if (markup3d.getItems().toArray().length > 0)
                 markup3d.getItems().clear();
             else {
-                var elements = [].concat(service.LabelElements, service.Other2Elements);
-                elements.forEach(element => {
-                    let ar = new Float32Array(6);
-                    viewer.model.getInstanceTree().getNodeBox(element, ar);
-                    let box = new THREE.Box3(new THREE.Vector3(ar[0], ar[1], ar[2]), new THREE.Vector3(ar[3], ar[4], ar[5]));
+                // var elements = [].concat(service.LabelElements, service.Other2Elements);
+                // elements.forEach(element => {
+                //     let ar = new Float32Array(6);
+                //     viewer.model.getInstanceTree().getNodeBox(element, ar);
+                //     let box = new THREE.Box3(new THREE.Vector3(ar[0], ar[1], ar[2]), new THREE.Vector3(ar[3], ar[4], ar[5]));
 
-                    var markupItem = markup3d.getItems().add();
-                    markupItem.tag = element;
-                    markupItem.anchorDbid = element;
-                    markupItem.anchor = new Sippreep.Extensions.Markup.Point(box.center());
-                    markupItem.offset = new THREE.Vector3(0, 0, 15);
-                    markupItem.content = service.getMessage(element);
-                    markupItem.contentOffset = new THREE.Vector2(-8, -8);
-                    markupItem.appearance.anchorColor = new THREE.Color(1, 1, 1);
-                    markupItem.appearance.offsetColor = new THREE.Color(1, 1, 1);
-                });
+                //     var markupItem = markup3d.getItems().add();
+                //     markupItem.tag = element;
+                //     markupItem.anchorDbid = element;
+                //     markupItem.anchor = new Sippreep.Extensions.Markup.Point(box.center());
+                //     markupItem.offset = new THREE.Vector3(0, 0, 15);
+                //     markupItem.content = service.getMessage(element);
+                //     markupItem.contentOffset = new THREE.Vector2(-8, -8);
+                //     markupItem.appearance.anchorColor = new THREE.Color(1, 1, 1);
+                //     markupItem.appearance.offsetColor = new THREE.Color(1, 1, 1);
+                // });
+                customExport.importTo(markup3d, demoData);
+                let box = CombieArray(SelectArray(markup3d.getItems().toArray(), (v) => markup3d.getBox(v)), (x, y) => x.union(y));
+                E('level2').click();
+                viewer.navigation.fitBounds(false, box);
             }
         }
         document.getElementById("saveState").onclick = (e) => {
@@ -139,15 +246,15 @@ Promise.all([viewerPromise, modelPromise, objectsPromise, Markup3DPromise]).then
 
 
 
-        document.getElementById("ShowMark3D").click();
+        //document.getElementById("ShowMark3D").click();
 
-        document.getElementById("SimulatedColors").click();
+        //document.getElementById("SimulatedColors").click();
 
 
 
         //document.getElementById("BuildingElements").click();
 
-        document.getElementById("Level2").click();
+        //document.getElementById("Level2").click();
 
         //设置视图最佳视角
         document.getElementById("loadState").click();

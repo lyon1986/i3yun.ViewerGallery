@@ -37,7 +37,7 @@ Promise.all([viewerPromise]).then(([viewer]) => {
             if (viewer.model) {
                 viewer.unloadModel(viewer.model);
             }
-            viewer.loadModel(`${host}/api/UserSpace/ViewFile/${sceneID}?path=/3d.svf`, null, s, f);
+            viewer.loadModel(`${host}/api/UserSpace/ViewFile/${sceneID}?path=/3d.svf`, { globalOffset: { x: 0, y: 0, z: 0 } }, s, f);
         });
         modelPromise.then((model) => {
             return new Promise((s, f) => model.getExternalIdMapping(s, f));
@@ -255,110 +255,27 @@ Promise.all([pickPointPromise, Markup3DPromise, viewerPromise]).then(([pickPoint
         };
     };
     document.getElementById("exportTo2").onclick = (e) => {
-        let convertArray = (list1, convert) => {
-            let list2 = [];
-            for (let item of list1) {
-                list2.push(convert(item));
-            }
-            return list2;
-        }
-        let convertColor = (color) => { return { r: color.r, g: color.g, b: color.b }; }
-        let convertVector2 = (vector2) => { return { x: vector2.x, y: vector2.y }; }
-        let convertVector3 = (vector3) => { return { x: vector3.x, y: vector3.y, z: vector3.z }; }
-        let convertAnchor = (anchor) => {
-            if (anchor instanceof Sippreep.Extensions.Markup.Point)
-                return { type: "Point", value: convertVector3(anchor.value) };
-            else if (anchor instanceof Sippreep.Extensions.Markup.Polyline) {
-                return { type: "Polyline", path: convertArray(anchor.path, convertVector3) };
-            } else if (anchor instanceof Sippreep.Extensions.Markup.Polygon) {
-                return { type: "Polygon", vertices: convertArray(anchor.vertices, convertVector3) };
-            }
-        }
-        let convertAppearance = (app) => {
-            let json = {};
-            if (app.anchorColor)
-                json.anchorColor = convertColor(app.anchorColor);
-            if (app.offsetColor)
-                json.offsetColor = convertColor(app.offsetColor);
-            return json;
-        }
-        let convertItem = (item) => {
-            let data = { anchor: convertAnchor(item.anchor) };
-            data.anchorDbid = item.anchorDbid;
-            if (item.offset)
-                data.offset = convertVector3(item.offset);
-            if (item.content)
-                data.content = item.content;
-            if (item.contentOffset)
-                data.contentOffset = convertVector2(item.contentOffset);
-            if (item.appearance) {
-                data.appearance = convertAppearance(item.appearance);
-            }
-            data.tag = item.tag;
-            return data;
-        }
-        let data = {};
-        data.version = "1.0.0";
-        data.items = convertArray(markup3d.getItems().toArray(), convertItem);
+        // let jsonDataOffset = document.getElementById("jsonDataOffset").value;
+        // let dataOffset = jsonDataOffset ? JSON.parse(jsonDataOffset) : undefined;
+        //let data = customExport.exportTo(markup3d, dataOffset);
+
+        let data = customExport.exportTo(markup3d);
         document.getElementById("jsonData").value = JSON.stringify(data);
     };
     document.getElementById("importTo2").onclick = (e) => {
-        let convertArray = (list1, convert) => {
-            let list2 = [];
-            for (let item of list1) {
-                list2.push(convert(item));
-            }
-            return list2;
-        }
-        let convertColor = (json) => { return new THREE.Color(json.r, json.g, json.b); }
-        let convertVector2 = (json) => { return new THREE.Vector2(json.x, json.y); }
-        let convertVector3 = (json) => { return new THREE.Vector3(json.x, json.y, json.z); }
-        let convertAnchor = (json) => {
-            if (json.type == "Point") {
-                return new Sippreep.Extensions.Markup.Point(convertVector3(json.value));
-            } else if (json.type == "Polyline") {
-                let line = new Sippreep.Extensions.Markup.Polyline();
-                line.path = new Array();
-                json.path.forEach(_ => {
-                    line.path.push(convertVector3(_));
-                });
-                return line;
-            } else if (json.type == "Polygon") {
-                let line = new Sippreep.Extensions.Markup.Polygon();
-                line.vertices = new Array();
-                json.vertices.forEach(_ => {
-                    line.vertices.push(convertVector3(_));
-                });
-                return line;
-            }
-        }
-        let convertAppearance = (json, oldValue) => {
-            if (!oldValue)
-                oldValue = {};
-            if (json.anchorColor)
-                oldValue.anchorColor = convertColor(json.anchorColor);
-            if (json.offsetColor)
-                oldValue.offsetColor = convertColor(json.offsetColor);
-            return oldValue;
-        }
-        let convertItem = (json) => {
-            let itemData = markup3d.getItems().add();
-            itemData.anchor = convertAnchor(json.anchor);
-            itemData.anchorDbid = json.anchorDbid;
-            if (json.offset)
-                itemData.offset = convertVector3(json.offset);
-            if (json.content)
-                itemData.content = json.content;
-            if (json.contentOffset)
-                itemData.contentOffset = convertVector2(json.contentOffset);
-            if (json.appearance) {
-                itemData.appearance = convertAppearance(json.appearance, itemData.appearance);
-            }
-            itemData.tag = json.tag;
-            return itemData;
-        }
-        let data = JSON.parse(document.getElementById("jsonData").value);
-        convertArray(data.items, convertItem);
+        let jsonDataOffset = document.getElementById("jsonDataOffset").value;
+        let dataOffset = jsonDataOffset ? JSON.parse(jsonDataOffset) : undefined;
+
+        let dataString = document.getElementById("jsonData").value;
+        let data = dataString ? JSON.parse(dataString) : customData;
+
+        customExport.importTo(markup3d, data, dataOffset);
+    };
+    document.getElementById("exportTo").onclick = (e) => {
+        document.getElementById("jsonData").value = markup3d.exportItems();
+    };
+    document.getElementById("importTo").onclick = (e) => {
+        markup3d.importItems(document.getElementById("jsonData").value);
     };
 });
 //其他功能
