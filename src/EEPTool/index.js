@@ -41,15 +41,28 @@ Promise.all([viewerPromise, toolPromise]).then(([viewer, eeptool]) => {
     var modeBTs = document.getElementsByClassName("ToolMode");
     for (let i = 0; i < modeBTs.length; i++) {
         modeBTs[i].onclick = (e) => {
-            eeptool.set3DCommand(parseInt(e.target.getAttribute("data")));
+            eeptool.set3DCommand(parseInt(e.target.getAttribute("data")));//执行界面按钮的模式选择
         }
     }
+    /**
+     * 创建一个回调函数
+     * 仅在拾取3D点时有效
+     * @param {*} point 
+     */
+    let callback = (point) => {
+        console.log(["鼠标点击=", point.x, point.y, point.z]);
+    };
+    /**
+     * 将回调函数传入拾取三维点
+     */
+    eeptool.addPicked(callback);
 
     //订阅视图选中项改变事件
     viewer.addEventListener(Sippreep.Viewing.SELECTION_CHANGED_EVENT, () => {
         var elements = viewer.getSelection();
         document.getElementById("MySelectionValue").innerHTML = elements.length == 1 ? ("ID:" + elements[0]) : (elements.length + "项");
     });
+    //设置默认的操作模式
     viewer.addEventListener(Sippreep.Viewing.MODEL_ADDED_EVENT, () => {
         _eeptool.set3DCommand(Sippreep.Extensions.EEPTools.EEPToolCommand.ROTATE);
     });
