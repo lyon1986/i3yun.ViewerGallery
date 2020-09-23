@@ -1,7 +1,9 @@
 //创建三维视图
 let viewerPromise = SippreepViewer.CreateViewer(document.getElementById("viewer1"));
 
-//场景配置
+/**
+ * 场景配置
+ */
 Promise.all([viewerPromise]).then(([viewer]) => {
     document.getElementById("updateScene").onclick = () => {
         let host = document.getElementById("DATABASE").value;
@@ -47,10 +49,12 @@ Promise.all([viewerPromise]).then(([viewer]) => {
 });
 
 /**
+ * 三维操控
+ */
+/**
  * @type {Promise<Sippreep.Extensions.EEPTools.EEPToolExtension>}
  */
 let toolPromise = viewerPromise.then(v => v.loadExtension("Sippreep.Extensions.EEPTools.EEPToolExtension"));
-//三维操控
 Promise.all([viewerPromise, toolPromise]).then(([viewer, eeptool]) => {
     _eeptool = eeptool;
     let modeBTs = document.getElementsByClassName("ToolMode");
@@ -70,6 +74,9 @@ Promise.all([viewerPromise, toolPromise]).then(([viewer, eeptool]) => {
 });
 
 /**
+ * 三维标记
+ */
+/**
  * @type { Promise<Sippreep.Extensions.PickPoint.PickPointExtension> }
  */
 let pickPointPromise = viewerPromise.then(v => {
@@ -81,9 +88,7 @@ let pickPointPromise = viewerPromise.then(v => {
 let Markup3DPromise = viewerPromise.then((viewer) => {
     return viewer.loadExtension("Sippreep.Extensions.Markup.Markup3DExtension");
 });
-
-//三维标记
-Promise.all([pickPointPromise, Markup3DPromise, viewerPromise]).then(([pickPoint, markup3d, viewer]) => {
+Promise.all([pickPointPromise, Markup3DPromise, viewerPromise]).then(([pickPoint, markup3dApi, viewer]) => {
     /**
      * @type {(point: THREE.Vector3) => void)}
      */
@@ -103,7 +108,7 @@ Promise.all([pickPointPromise, Markup3DPromise, viewerPromise]).then(([pickPoint
      */
     let getSelectItems = (ifNoSelect) => {
         if (selectNames && selectNames.length > 0) {
-            return markup3d.getItems().toArray().filter((v) => {
+            return markup3dApi.getItems().toArray().filter((v) => {
                 return selectNames.indexOf(v.tag) >= 0;
             })
         } else {
@@ -115,7 +120,7 @@ Promise.all([pickPointPromise, Markup3DPromise, viewerPromise]).then(([pickPoint
      */
     pickPoint.registerPointCallback((p) => {
         let t = viewer.navigation.getEyeVector().normalize();
-        pickHandle(p.sub(t.multiplyScalar(0.01)));
+        pickHandle(p.sub(t.multiplyScalar(0.01))); //在视线方向减一厘米         
     });
 
     document.getElementById("selectNames").onchange = (e) => {
@@ -124,29 +129,26 @@ Promise.all([pickPointPromise, Markup3DPromise, viewerPromise]).then(([pickPoint
     document.getElementById("fitViewMarkup").onclick = (e) => {
         let getBox = () => {
             let box = new THREE.Box3();
-            getSelectItems(markup3d.getItems().toArray()).forEach(v => {
-                box.union(markup3d.getBox(v));
+            getSelectItems(markup3dApi.getItems().toArray()).forEach(v => {
+                box.union(markup3dApi.getBox(v));
             });
             return box;
         };
-        let showMarkItem = () => {
-            let markItem = getSelectItems(markup3d.getItems().toArray())[0];
-            if (markItem) {
-                document.getElementById("item_offset").value = (markItem.offset) ? JSON.stringify(markItem.offset.toArray()) : null;
-                document.getElementById("item_contentOffset").value = (markItem.contentOffset) ? JSON.stringify(markItem.contentOffset.toArray()) : null;
-                document.getElementById("item_anchorColor").value = (markItem.appearance.anchorColor) ? JSON.stringify(markItem.appearance.anchorColor.toArray()) : null;
-                document.getElementById("item_offsetColor").value = (markItem.appearance && markItem.appearance.offsetColor) ? JSON.stringify(markItem.appearance.offsetColor.toArray()) : null;
-            }
-        };
 
         viewer.navigation.fitBounds(true, getBox());
-        showMarkItem();
+        let markItem = getSelectItems(markup3dApi.getItems().toArray())[0];
+        if (markItem) {
+            document.getElementById("item_offset").value = (markItem.offset) ? JSON.stringify(markItem.offset.toArray()) : null;
+            document.getElementById("item_contentOffset").value = (markItem.contentOffset) ? JSON.stringify(markItem.contentOffset.toArray()) : null;
+            document.getElementById("item_anchorColor").value = (markItem.appearance.anchorColor) ? JSON.stringify(markItem.appearance.anchorColor.toArray()) : null;
+            document.getElementById("item_offsetColor").value = (markItem.appearance && markItem.appearance.offsetColor) ? JSON.stringify(markItem.appearance.offsetColor.toArray()) : null;
+        }
     }
     document.getElementById("updateMarkup").onclick = (e) => {
-        getSelectItems(markup3d.getItems().toArray()).forEach(v => {
+        getSelectItems(markup3dApi.getItems().toArray()).forEach(v => {
             let value;
             value = document.getElementById("item_offset").value;
-            if (value) v.offset = new THREE.Vector3(...(JSON.parse(value)));
+            if (value) v.offset = new THREE.Vector3(...(JSON.parse(value))); //将[1,2,3]转成THREE.Vector3类型
             value = document.getElementById("item_contentOffset").value;
             if (value) v.contentOffset = new THREE.Vector2(...(JSON.parse(value)));
             value = document.getElementById("item_anchorColor").value;
@@ -159,10 +161,10 @@ Promise.all([pickPointPromise, Markup3DPromise, viewerPromise]).then(([pickPoint
         let selectItems = getSelectItems(null);
         if (selectItems) {
             selectItems.forEach(v => {
-                markup3d.getItems().remove(v);
+                markup3dApi.getItems().remove(v);
             });
         } else {
-            markup3d.getItems().clear();
+            markup3dApi.getItems().clear();
         }
     }
     document.getElementById("newPoint").onclick = (e) => {
@@ -170,7 +172,7 @@ Promise.all([pickPointPromise, Markup3DPromise, viewerPromise]).then(([pickPoint
         pickPoint.enableMode();
         pickHandle = (p) => {
             orderNumber++;
-            newMarkupItem = markup3d.getItems().add();
+            newMarkupItem = markup3dApi.getItems().add();
             newMarkupItem.tag = orderNumber.toString();
 
             let a = new Sippreep.Extensions.Markup.Point();
@@ -187,10 +189,9 @@ Promise.all([pickPointPromise, Markup3DPromise, viewerPromise]).then(([pickPoint
             newMarkupItem = null;
         }
         pickPoint.enableMode();
-
         pickHandle = (p) => {
             if (!newMarkupItem) {
-                newMarkupItem = markup3d.getItems().add();
+                newMarkupItem = markup3dApi.getItems().add();
                 orderNumber++;
                 newMarkupItem.tag = orderNumber.toString();
 
@@ -211,11 +212,10 @@ Promise.all([pickPointPromise, Markup3DPromise, viewerPromise]).then(([pickPoint
             newMarkupItem = null;
         }
         pickPoint.enableMode();
-
         pickHandle = (p) => {
             if (!newMarkupItem) {
                 orderNumber++;
-                newMarkupItem = markup3d.getItems().add();
+                newMarkupItem = markup3dApi.getItems().add();
                 newMarkupItem.tag = orderNumber.toString();
 
                 let a = new Sippreep.Extensions.Markup.Polygon();
@@ -236,7 +236,7 @@ Promise.all([pickPointPromise, Markup3DPromise, viewerPromise]).then(([pickPoint
         // let dataOffset = jsonDataOffset ? JSON.parse(jsonDataOffset) : undefined;
         //let data = customExport.exportTo(markup3d, dataOffset);
 
-        let data = customExport.exportTo(markup3d);
+        let data = customExport.exportTo(markup3dApi);
         document.getElementById("jsonData").value = JSON.stringify(data);
     };
     document.getElementById("importTo2").onclick = (e) => {
@@ -246,23 +246,25 @@ Promise.all([pickPointPromise, Markup3DPromise, viewerPromise]).then(([pickPoint
         let dataString = document.getElementById("jsonData").value;
         let data = dataString ? JSON.parse(dataString) : customData;
 
-        customExport.importTo(markup3d, data, dataOffset);
+        customExport.importTo(markup3dApi, data, dataOffset);
     };
     document.getElementById("exportTo").onclick = (e) => {
-        document.getElementById("jsonData").value = markup3d.exportItems();
+        document.getElementById("jsonData").value = markup3dApi.exportItems();
     };
     document.getElementById("importTo").onclick = (e) => {
-        markup3d.importItems(document.getElementById("jsonData").value);
+        markup3dApi.importItems(document.getElementById("jsonData").value);
     };
 });
 
+/**
+ * 辅助功能
+ */
 /**
  * @type {Promise<Sippreep.Extensions.ModelMan.ModelManExtension>}
  */
 let modelManPromise = viewerPromise.then((viewer) => {
     return viewer.loadExtension("Sippreep.Extensions.ModelMan.ModelManExtension");
 });
-//其他功能
 Promise.all([viewerPromise, modelManPromise]).then(([viewer, modelMan]) => {
     document.getElementById("setTrans").onclick = (e) => {
         modelMan.GetManager().then((v) => {
