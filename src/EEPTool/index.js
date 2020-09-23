@@ -56,6 +56,7 @@ Promise.all([viewerPromise, toolPromise]).then(([viewer, eeptool]) => {
      * 将回调函数传入拾取三维点
      */
     eeptool.addPicked(callback);
+    //eeptool.removePicked(callback);
 
     //订阅视图选中项改变事件
     viewer.addEventListener(Sippreep.Viewing.SELECTION_CHANGED_EVENT, () => {
