@@ -1,4 +1,4 @@
-customExport = (function() {
+弃customExport = (function() {
     let toFixed = (n, f) => {
         return parseFloat(n.toFixed(f));
     }

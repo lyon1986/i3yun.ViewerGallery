@@ -75,6 +75,7 @@ Promise.all([viewerPromise, toolPromise]).then(([viewer, eeptool]) => {
 
 /**
  * 三维标记
+ * 开发接口与类型定义文档 http://bimviewer.aisanwei.cn/docs/modules/sippreep.extensions.markup.html 
  */
 /**
  * @type { Promise<Sippreep.Extensions.PickPoint.PickPointExtension> }
@@ -88,7 +89,7 @@ let pickPointPromise = viewerPromise.then(v => {
 let Markup3DPromise = viewerPromise.then((viewer) => {
     return viewer.loadExtension("Sippreep.Extensions.Markup.Markup3DExtension");
 });
-Promise.all([pickPointPromise, Markup3DPromise, viewerPromise]).then(([pickPoint, markup3dApi, viewer]) => {
+Promise.all([pickPointPromise, Markup3DPromise, viewerPromise]).then(([pickPointApi, markup3dApi, viewer]) => {
     /**
      * @type {(point: THREE.Vector3) => void)}
      */
@@ -103,23 +104,24 @@ Promise.all([pickPointPromise, Markup3DPromise, viewerPromise]).then(([pickPoint
      */
     let selectNames = null;
     /**
-     * 
-     * @param {null|Sippreep.Extensions.Markup.IMarkup3D[]} ifNoSelect 
+     * 用户输入的编号 与 系统里面存的标记编号 取一个交集
+     * @param {null|Sippreep.Extensions.Markup.IMarkup3D[]} ifNoSelectReturnMe 
      */
-    let getSelectItems = (ifNoSelect) => {
+    let getSelectItems = (ifNoSelectReturnMe) => {
         if (selectNames && selectNames.length > 0) {
             return markup3dApi.getItems().toArray().filter((v) => {
                 return selectNames.indexOf(v.tag) >= 0;
             })
         } else {
-            return ifNoSelect;
+            return ifNoSelectReturnMe;
         }
     };
     /**
+     * 事件传播路径：pickPointApi触发回调 -> 此函数修正 -> 各类型标记定义的pickHandle
      * 防止与碰撞物体重叠
      */
-    pickPoint.registerPointCallback((p) => {
-        let t = viewer.navigation.getEyeVector().normalize();
+    pickPointApi.registerPointCallback((p) => {
+        let t = viewer.navigation.getEyeVector().normalize(); //视线方向单位向量
         pickHandle(p.sub(t.multiplyScalar(0.01))); //在视线方向减一厘米         
     });
 
@@ -134,8 +136,13 @@ Promise.all([pickPointPromise, Markup3DPromise, viewerPromise]).then(([pickPoint
             });
             return box;
         };
-
+        /**
+         * 按照目标盒子调整视角
+         * 第一个参数 true表示无动画,目前只能填true
+         * 第二个参数 类型是three.box3表示目标盒子
+         */
         viewer.navigation.fitBounds(true, getBox());
+        //用户输入的第一个标记或者系统中的第一个标记
         let markItem = getSelectItems(markup3dApi.getItems().toArray())[0];
         if (markItem) {
             document.getElementById("item_offset").value = (markItem.offset) ? JSON.stringify(markItem.offset.toArray()) : null;
@@ -144,6 +151,10 @@ Promise.all([pickPointPromise, Markup3DPromise, viewerPromise]).then(([pickPoint
             document.getElementById("item_offsetColor").value = (markItem.appearance && markItem.appearance.offsetColor) ? JSON.stringify(markItem.appearance.offsetColor.toArray()) : null;
         }
     }
+    /**
+     * 根据用户填写的四项信息更新系统内信息
+     * 若没有填写编号，则更新全部编号
+     */
     document.getElementById("updateMarkup").onclick = (e) => {
         getSelectItems(markup3dApi.getItems().toArray()).forEach(v => {
             let value;
@@ -157,6 +168,11 @@ Promise.all([pickPointPromise, Markup3DPromise, viewerPromise]).then(([pickPoint
             if (value) v.appearance.offsetColor = new THREE.Color(...(JSON.parse(value)));
         })
     };
+    /**
+     * 删除标签
+     * 用户填写编号时 删除编号
+     * 没有填写时 删除全部
+     */
     document.getElementById("deleteMarkup").onclick = (e) => {
         let selectItems = getSelectItems(null);
         if (selectItems) {
@@ -169,30 +185,41 @@ Promise.all([pickPointPromise, Markup3DPromise, viewerPromise]).then(([pickPoint
     }
     document.getElementById("newPoint").onclick = (e) => {
         newMarkupItem = null;
-        pickPoint.enableMode();
+        pickPointApi.enableMode(); //启用拾取点
+        //产生一个拾取3D点回调 
         pickHandle = (p) => {
             orderNumber++;
+            //创建一个标签，内容全部是默认值 标签实现接口 http://bimviewer.aisanwei.cn/docs/interfaces/sippreep.extensions.markup.imarkup3d.html 
             newMarkupItem = markup3dApi.getItems().add();
-            newMarkupItem.tag = orderNumber.toString();
+            newMarkupItem.tag = orderNumber.toString(); //tag为标签的自定义数据
 
+            /**
+             * 创建一个点
+             * http://bimviewer.aisanwei.cn/docs/classes/sippreep.extensions.markup.point.html
+             */
             let a = new Sippreep.Extensions.Markup.Point();
             a.value = p;
             newMarkupItem.anchor = a;
 
-            var t = document.createElement("div");
-            t.innerHTML = `<div style="background-color:rgba(255, 255, 255, 0.8);">编号：${newMarkupItem.tag}</div>`;
-            newMarkupItem.content = t.firstChild;
+            /**
+             * 标记的内容
+             */
+            newMarkupItem.content = `<div style="background-color:rgba(255, 255, 255, 0.8);">编号：${newMarkupItem.tag}</div>`;
+
+            /**
+             * tips：一般来讲一个标签由三部分组成 热点 偏移线 内容框。 但是这里没有使用偏移线
+             */
         };
     };
     document.getElementById("newPolyline").onclick = (e) => {
-        if (newMarkupItem && !checkType(newMarkupItem.anchor, Sippreep.Extensions.Markup.Polyline)) {
-            newMarkupItem = null;
-        }
-        pickPoint.enableMode();
+        //if (newMarkupItem && !checkType(newMarkupItem.anchor, Sippreep.Extensions.Markup.Polyline)) {
+        newMarkupItem = null;
+        //}
+        pickPointApi.enableMode();
         pickHandle = (p) => {
             if (!newMarkupItem) {
-                newMarkupItem = markup3dApi.getItems().add();
                 orderNumber++;
+                newMarkupItem = markup3dApi.getItems().add();
                 newMarkupItem.tag = orderNumber.toString();
 
                 let a = new Sippreep.Extensions.Markup.Polyline();
@@ -208,10 +235,10 @@ Promise.all([pickPointPromise, Markup3DPromise, viewerPromise]).then(([pickPoint
         };
     };
     document.getElementById("newPolygon").onclick = (e) => {
-        if (newMarkupItem && !checkType(newMarkupItem.anchor, Sippreep.Extensions.Markup.Polygon)) {
-            newMarkupItem = null;
-        }
-        pickPoint.enableMode();
+        //if (newMarkupItem && !checkType(newMarkupItem.anchor, Sippreep.Extensions.Markup.Polygon)) {
+        newMarkupItem = null;
+        //}
+        pickPointApi.enableMode();
         pickHandle = (p) => {
             if (!newMarkupItem) {
                 orderNumber++;
@@ -223,7 +250,6 @@ Promise.all([pickPointPromise, Markup3DPromise, viewerPromise]).then(([pickPoint
                 a.vertices.push(p);
                 newMarkupItem.anchor = a;
                 newMarkupItem.content = `<div style="background-color:rgba(255, 255, 255, 0.8);">编号：${newMarkupItem.tag}</div>`;
-
             } else {
                 let a = newMarkupItem.anchor;
                 a.vertices.push(p);
@@ -269,10 +295,11 @@ Promise.all([viewerPromise, modelManPromise]).then(([viewer, modelMan]) => {
 });
 
 function checkType(value, valueType) {
-    if (valueType) {
-        if (value instanceof valueType) {
-            return true;
-        }
-    }
-    return false;
+    return (valueType && (value instanceof valueType));
+    // if (valueType) {
+    //     if (value instanceof valueType) {
+    //         return true;
+    //     }
+    // }
+    // return false;
 }
