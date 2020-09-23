@@ -231,28 +231,23 @@ Promise.all([pickPointPromise, Markup3DPromise, viewerPromise]).then(([pickPoint
             }
         };
     };
-    document.getElementById("exportTo2").onclick = (e) => {
-        // let jsonDataOffset = document.getElementById("jsonDataOffset").value;
-        // let dataOffset = jsonDataOffset ? JSON.parse(jsonDataOffset) : undefined;
-        //let data = customExport.exportTo(markup3d, dataOffset);
-
-        let data = customExport.exportTo(markup3dApi);
-        document.getElementById("jsonData").value = JSON.stringify(data);
-    };
-    document.getElementById("importTo2").onclick = (e) => {
-        let jsonDataOffset = document.getElementById("jsonDataOffset").value;
-        let dataOffset = jsonDataOffset ? JSON.parse(jsonDataOffset) : undefined;
-
-        let dataString = document.getElementById("jsonData").value;
-        let data = dataString ? JSON.parse(dataString) : customData;
-
-        customExport.importTo(markup3dApi, data, dataOffset);
-    };
+    // document.getElementById("exportTo2").onclick = (e) => {
+    //     let data = customExport.exportTo(markup3dApi);
+    //     document.getElementById("jsonData").value = JSON.stringify(data);
+    // };
+    // document.getElementById("importTo2").onclick = (e) => {
+    //     let jsonDataOffset = document.getElementById("jsonDataOffset").value;
+    //     let dataOffset = jsonDataOffset ? JSON.parse(jsonDataOffset) : undefined;
+    //     let dataString = document.getElementById("jsonData").value;
+    //     let data = dataString ? JSON.parse(dataString) : customData;
+    //     customExport.importTo(markup3dApi, data, dataOffset);
+    // };
     document.getElementById("exportTo").onclick = (e) => {
         document.getElementById("jsonData").value = markup3dApi.exportItems();
     };
     document.getElementById("importTo").onclick = (e) => {
-        markup3dApi.importItems(document.getElementById("jsonData").value);
+        let data = document.getElementById("jsonData").value || customData2;
+        markup3dApi.importItems(data);
     };
 });
 
