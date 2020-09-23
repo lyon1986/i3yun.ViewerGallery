@@ -2,7 +2,7 @@
 let viewerPromise = SippreepViewer.CreateViewer(document.getElementById("viewer1"));
 
 /**
- * 场景配置
+ * ===========================================场景配置===========================================
  */
 Promise.all([viewerPromise]).then(([viewer]) => {
     document.getElementById("updateScene").onclick = () => {
@@ -49,7 +49,7 @@ Promise.all([viewerPromise]).then(([viewer]) => {
 });
 
 /**
- * 三维操控
+ * ===========================================三维操控===========================================
  */
 /**
  * @type {Promise<Sippreep.Extensions.EEPTools.EEPToolExtension>}
@@ -74,7 +74,7 @@ Promise.all([viewerPromise, toolPromise]).then(([viewer, eeptool]) => {
 });
 
 /**
- * 三维标记
+ * ===========================================三维标记===========================================
  * 开发接口与类型定义文档 http://bimviewer.aisanwei.cn/docs/modules/sippreep.extensions.markup.html 
  */
 /**
@@ -257,17 +257,6 @@ Promise.all([pickPointPromise, Markup3DPromise, viewerPromise]).then(([pickPoint
             }
         };
     };
-    // document.getElementById("exportTo2").onclick = (e) => {
-    //     let data = customExport.exportTo(markup3dApi);
-    //     document.getElementById("jsonData").value = JSON.stringify(data);
-    // };
-    // document.getElementById("importTo2").onclick = (e) => {
-    //     let jsonDataOffset = document.getElementById("jsonDataOffset").value;
-    //     let dataOffset = jsonDataOffset ? JSON.parse(jsonDataOffset) : undefined;
-    //     let dataString = document.getElementById("jsonData").value;
-    //     let data = dataString ? JSON.parse(dataString) : customData;
-    //     customExport.importTo(markup3dApi, data, dataOffset);
-    // };
     document.getElementById("exportTo").onclick = (e) => {
         document.getElementById("jsonData").value = markup3dApi.exportItems();
     };
@@ -278,7 +267,7 @@ Promise.all([pickPointPromise, Markup3DPromise, viewerPromise]).then(([pickPoint
 });
 
 /**
- * 辅助功能
+ * ===========================================辅助功能===========================================
  */
 /**
  * @type {Promise<Sippreep.Extensions.ModelMan.ModelManExtension>}
@@ -296,10 +285,4 @@ Promise.all([viewerPromise, modelManPromise]).then(([viewer, modelMan]) => {
 
 function checkType(value, valueType) {
     return (valueType && (value instanceof valueType));
-    // if (valueType) {
-    //     if (value instanceof valueType) {
-    //         return true;
-    //     }
-    // }
-    // return false;
 }
