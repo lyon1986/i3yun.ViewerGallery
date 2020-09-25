@@ -139,7 +139,7 @@ Promise.all([viewerPromise, modelPromise, objectsPromise, Markup3DPromise]).then
                             viewer.navigation.fitBounds(false, modelData.box);
                             markup3d.getItems().clear();
                             customExport.importTo(markup3d, yuanquData);
-                            E('level').click();
+                            //E('level').click();
                         });
 
                     }
