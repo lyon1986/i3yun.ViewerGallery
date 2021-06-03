@@ -14,7 +14,7 @@ Sippreep.Initializer().then(() => {
   const url1 = `http://api.aisanwei.cn/api/Storge/Viewable?ID=`;
 
   /**
-   * url2 这部分数据是从转换接口的返回中获取的
+   * url2 这部分数据是从`转换webApi接口`的返回中获取的
    *
    * ```ts
    * let mainFileID = res.manifest.derivatives.find((v) => {
@@ -31,6 +31,7 @@ Sippreep.Initializer().then(() => {
     /**
      * 您的业务内容一般写在这里（特殊情况如需要控制加载模型的相关，请与我们联系）
      */
+    // viewer.getToolbar(false).getControl(`settingsTools`).setVisible(false);
   }
   function onFailed(error) {
     console.warn(error);
