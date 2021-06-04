@@ -1,6 +1,9 @@
 ///<reference types="@i3yun/viewer" />
 
 let viewer;
+Sippreep.Config.dependencies.push(
+  'http://api.aisanwei.cn/api/viewer.amarkups/dist/extensions/Sippreep.Extensions.AMarkups.js',
+);
 Sippreep.Initializer().then(() => {
   let htmlDivElement = document.getElementById('SippreepViewer');
   viewer = new Sippreep.Viewing.GuiViewer3D(htmlDivElement);
@@ -32,6 +35,7 @@ Sippreep.Initializer().then(() => {
      * 您的业务内容一般写在这里（特殊情况如需要控制加载模型的相关，请与我们联系）
      */
     // viewer.getToolbar(false).getControl(`settingsTools`).setVisible(false);
+    viewer.loadExtension('Sippreep.Extensions.AMarkups.AMarkupsExtension');
   }
   function onFailed(error) {
     console.warn(error);
