@@ -1,6 +1,7 @@
 ///<reference types="@i3yun/viewer" />
 
 let viewer;
+// 添加插件文件
 Sippreep.Config.dependencies.push(
   'http://api.aisanwei.cn/api/viewer.amarkups/dist/extensions/Sippreep.Extensions.AMarkups.js',
 );
@@ -35,6 +36,7 @@ Sippreep.Initializer().then(() => {
      * 您的业务内容一般写在这里（特殊情况如需要控制加载模型的相关，请与我们联系）
      */
     // viewer.getToolbar(false).getControl(`settingsTools`).setVisible(false);
+    // 加载插件
     viewer.loadExtension('Sippreep.Extensions.AMarkups.AMarkupsExtension');
   }
   function onFailed(error) {
