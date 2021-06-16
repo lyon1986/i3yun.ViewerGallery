@@ -18,6 +18,24 @@ Sippreep.Initializer().then(() => {
       ext.enableMeasureTool(true, Sippreep.Extensions.Measures.MeasurementType.ANGLE);
       ext.enableMeasureTool(true, Sippreep.Extensions.Measures.MeasurementType.DISTANCE);
     });
+
+    viewer.finish();
+    
+    // 第二次创建
+    viewer = new Sippreep.Viewing.Viewer3D(document.getElementById('SippreepViewer'));
+    const viewerStartErrorCode = viewer.start();
+
+    const url1 = `http://api.aisanwei.cn/api/Storge/Viewable?ID=`;
+    let url2 = `jobs/ef819df5-ae58-4cb5-b558-61c49f75b6d8/output/main.hf`;
+    viewer.loadModel(url1 + url2, {}, onSucceed2, onFailed);
+  }
+
+  function onSucceed2(model) {
+    measure = viewer.loadExtension('Sippreep.Extensions.Measures.MeasureExtension');
+    measure.then((ext) => {
+      console.log(ext);
+      ext.enableMeasureTool(true, Sippreep.Extensions.Measures.MeasurementType.DISTANCE);
+    });
   }
 
   function onFailed(error) {
