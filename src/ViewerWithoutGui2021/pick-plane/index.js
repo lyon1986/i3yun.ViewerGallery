@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+'use strict';
 ///<reference types="@i3yun/viewer" />
 
 let viewer;
