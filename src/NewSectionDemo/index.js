@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /**
  * 包含四个插件
  *  

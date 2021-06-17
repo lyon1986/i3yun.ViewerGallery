@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 var allGui = new dat.GUI({
   closeOnTop: true
 });

@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 //创建三维视图
 let viewerPromise = SippreepViewer.CreateViewer(document.getElementById('viewer1'));
 
