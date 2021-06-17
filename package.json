@@ -1,33 +1,33 @@
 {
-    "name": "siiri-viewer-gallery",
-    "version": "1.0.5",
-    "description": "BIM轻量化平台是一个互联网三维可视化解决方案。包括BIM轻量化引擎和业务组件。",
-    "main": "",
-    "types": "./ref/index.d.ts",
-    "scripts": {
-        "addUser": "npm adduser --registry http://registry.npmjs.org",
-        "publish": "npm publish --registry http://registry.npmjs.org",
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://gitee.com/i3yun/ViewerGallery.git"
-    },
-    "keywords": [
-        "demo",
-        "bim"
-    ],
-    "author": "lyon_en@163.com",
-    "license": "ISC",
-    "dependencies": {
-        "@i3yun/viewer": "^2021.2.1",
-        "@types/node": "^15.9.0",
-        "ts-node": "^10.0.0",
-        "typescript": "^4.2.4"
-    },
-    "devDependencies": {
-        "@typescript-eslint/eslint-plugin": "^4.27.0",
-        "@typescript-eslint/parser": "^4.27.0",
-        "eslint": "^7.28.0"
-    }
+  "name": "siiri-viewer-gallery",
+  "version": "1.0.6",
+  "description": "BIM轻量化平台是一个互联网三维可视化解决方案。包括BIM轻量化引擎和业务组件。本项目是轻量化引擎的一些简单示例。",
+  "main": "",
+  "types": "./ref/index.d.ts",
+  "scripts": {
+    "addUser": "npm adduser --registry http://registry.npmjs.org",
+    "publish": "npm publish --registry http://registry.npmjs.org",
+    "eslint check&fix src": "eslint src/** --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitee.com/i3yun/ViewerGallery.git"
+  },
+  "keywords": [
+    "demo",
+    "bim"
+  ],
+  "author": "lyon_en@163.com",
+  "license": "ISC",
+  "dependencies": {
+    "@i3yun/viewer": "^2021.2.1",
+    "@types/node": "^15.9.0",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.2.4"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.27.0",
+    "@typescript-eslint/parser": "^4.27.0",
+    "eslint": "^7.28.0"
+  }
 }
