@@ -15,7 +15,7 @@ Sippreep.Initializer().then(() => {
   // }
   // console.log('Initialization complete, loading a model next...');
 
-  const url1 = `http://api.aisanwei.cn/api/Storge/Viewable?ID=`;
+  const url1 = 'http://api.aisanwei.cn/api/Storge/Viewable?ID=';
 
   /**
    * url2 这部分数据是从`转换webApi接口`的返回中获取的
@@ -28,7 +28,7 @@ Sippreep.Initializer().then(() => {
    * ```
    *
    */
-  let url2 = `jobs/ef819df5-ae58-4cb5-b558-61c49f75b6d8/output/main.hf`;
+  let url2 = 'jobs/ef819df5-ae58-4cb5-b558-61c49f75b6d8/output/main.hf';
   viewer.loadModel(url1 + url2, {}, onSucceed, onFailed);
   function onSucceed(model) {
     console.log(`模型加载成功 ${model}`);
