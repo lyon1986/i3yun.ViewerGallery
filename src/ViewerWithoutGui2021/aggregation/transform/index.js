@@ -16,47 +16,35 @@ Sippreep.Initializer().then(() => {
 
   function onSucceed1(model) {
     model1 = model;
-    console.log('模型序号=');
-    console.log(1);
-    console.log(model1);
   }
   function onSucceed2(model) {
     model2 = model;
-    console.log('模型序号=');
-    console.log(2);
-    console.log(model2);
   }
   function onFailed(error) {
     console.warn(error);
   }
 });
 
-function onMyPosition() {
-  let dbid = model2.getRootId();
-  // console.log('rootID=');
-  // console.log(dbid); // 1
+//=============
+//对模型操作前，请确保模型加载完成（推荐在模型加载完成事件后操作而不是模型加载成功回调）
+//=============
+
+function onMyPosition(m = model2, dx = -10, dy = -1, dz = -10) {
   let fragIdsArray = [];
-  let it = model2.getData().instanceTree;
-  // console.log('it=');
-  // console.log(it);
-  window.it = it;
-  it.enumNodeFragments(
-    dbid,
+  //如果模型没有加载完成，这里instanceTree可能为空
+  m.getData().instanceTree.enumNodeFragments(
+    m.getRootId(),
     (fragId) => {
-      // console.log('fragId=');
-      // console.log(fragId);
       fragIdsArray.push(fragId);
     },
     true,
   );
-  // console.log('fragIdsArray=');
-  // console.log(fragIdsArray);
   fragIdsArray.forEach((fragId) => {
-    let fragProxy = viewer.impl.getFragmentProxy(model2, fragId);
+    let fragProxy = viewer.impl.getFragmentProxy(m, fragId);
     fragProxy.getAnimTransform();
-    fragProxy.position.x -= 10;
-    fragProxy.position.y -= 10;
-    fragProxy.position.z -= 10;
+    fragProxy.position.x += dx;
+    fragProxy.position.y += dy;
+    fragProxy.position.z += dz;
     fragProxy.updateAnimTransform();
   });
   viewer.impl.sceneUpdated(true);
@@ -68,11 +56,10 @@ function onMyPosition() {
  * q的第一项 cos(theta/2) 是w值，后一项 A*sin(theta/2) 是 (x,y,z)
  * 似乎是右手螺旋，大拇指指向旋转轴正方向，四指开始旋转
  */
-function onMyRotation() {
-  let dbid = model2.getRootId();
+function onMyRotation(m = model2, ax = 0, ay = 1, az = 0, degree = 15 /*单位是度*/) {
+  let dbid = m.getRootId();
   let fragIdsArray = [];
-  let it = model2.getData().instanceTree;
-  window.it = it;
+  let it = m.getData().instanceTree;
   it.enumNodeFragments(
     dbid,
     (fragId) => {
@@ -81,19 +68,16 @@ function onMyRotation() {
     true,
   );
 
-  fragIdsArray.forEach((fragId) => {
-    let fragProxy = viewer.impl.getFragmentProxy(model2, fragId);
-    fragProxy.getAnimTransform();
-    console.log(fragProxy.quaternion);
+  let qua = axisAndDegreeToQuaternion(ax, ay, az, degree);
 
-    // fragProxy.quaternion.w = 0.707;
-    // fragProxy.quaternion.x = 0.707;
-    // fragProxy.quaternion.y = 0;
-    // fragProxy.quaternion.z = 0;
-    fragProxy.quaternion.w = 0.707;
-    fragProxy.quaternion.x = 0;
-    fragProxy.quaternion.y = 0.707;
-    fragProxy.quaternion.z = 0;
+  fragIdsArray.forEach((fragId) => {
+    let fragProxy = viewer.impl.getFragmentProxy(m, fragId);
+    fragProxy.getAnimTransform();
+    let ans = quaMulti(fragProxy.quaternion, qua);
+    fragProxy.quaternion.w = ans.w;
+    fragProxy.quaternion.x = ans.x;
+    fragProxy.quaternion.y = ans.y;
+    fragProxy.quaternion.z = ans.z;
     fragProxy.updateAnimTransform();
   });
   viewer.impl.sceneUpdated(true);
@@ -103,7 +87,6 @@ function onMyScale() {
   let dbid = model2.getRootId();
   let fragIdsArray = [];
   let it = model2.getData().instanceTree;
-  window.it = it;
   it.enumNodeFragments(
     dbid,
     (fragId) => {
@@ -120,4 +103,35 @@ function onMyScale() {
     fragProxy.updateAnimTransform();
   });
   viewer.impl.sceneUpdated(true);
+}
+
+/**
+ * 由单位旋转轴和旋转角度计算四元数
+ * @param {*} a_x
+ * @param {*} a_y
+ * @param {*} a_z
+ * @param {*} degree
+ * @returns
+ */
+function axisAndDegreeToQuaternion(ax = 0, ay = 1, az = 0, degree = 15) {
+  let cos = Math.cos((degree * Math.PI) / 360);
+  let sin = Math.sin((degree * Math.PI) / 360);
+  let w = cos;
+  let x = ax * sin;
+  let y = ay * sin;
+  let z = az * sin;
+  return { w: w, x: x, y: y, z: z };
+}
+/**
+ * 两个四元数相乘
+ * @param {*}} q
+ * @param {*} p
+ * @returns
+ */
+function quaMulti(q = { w: 1, x: 0, y: 0, z: 0 }, p = { w: 1, x: 0, y: 0, z: 0 }) {
+  let w = q.w * p.w - q.x * p.x - q.y * p.y - q.z * p.z;
+  let x = q.x * p.w + q.w * p.x - q.z * p.y + q.y * p.z;
+  let y = q.y * p.w + q.z * p.x + q.w * p.y - q.x * p.z;
+  let z = q.z * p.w - q.y * p.x + q.x * p.y + q.w * p.z;
+  return { w: w, x: x, y: y, z: z };
 }
