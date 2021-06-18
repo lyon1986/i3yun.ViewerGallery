@@ -29,7 +29,7 @@ Sippreep.Initializer().then(() => {
 //对模型操作前，请确保模型加载完成（推荐在模型加载完成事件后操作而不是模型加载成功回调）
 //=============
 
-function onMyPosition(m = model2, dx = -10, dy = -1, dz = -10) {
+function onMyPosition(m = model2, dx = -10, dy = 10, dz = 0) {
   let fragIdsArray = [];
   //如果模型没有加载完成，这里instanceTree可能为空
   m.getData().instanceTree.enumNodeFragments(
@@ -83,10 +83,10 @@ function onMyRotation(m = model2, ax = 0, ay = 1, az = 0, degree = 15 /*单位�
   viewer.impl.sceneUpdated(true);
 }
 
-function onMyScale() {
-  let dbid = model2.getRootId();
+function onMyScale(m = model2, sx = 0.9, sy = 1, sz = 1) {
+  let dbid = m.getRootId();
   let fragIdsArray = [];
-  let it = model2.getData().instanceTree;
+  let it = m.getData().instanceTree;
   it.enumNodeFragments(
     dbid,
     (fragId) => {
@@ -95,11 +95,11 @@ function onMyScale() {
     true,
   );
   fragIdsArray.forEach((fragId) => {
-    let fragProxy = viewer.impl.getFragmentProxy(model2, fragId);
+    let fragProxy = viewer.impl.getFragmentProxy(m, fragId);
     fragProxy.getAnimTransform();
-    fragProxy.scale.x /= 2;
-    // fragProxy.scale.y /= 2;
-    // fragProxy.scale.z /= 2;
+    fragProxy.scale.x *= sx;
+    fragProxy.scale.y *= sy;
+    fragProxy.scale.z *= sz;
     fragProxy.updateAnimTransform();
   });
   viewer.impl.sceneUpdated(true);
