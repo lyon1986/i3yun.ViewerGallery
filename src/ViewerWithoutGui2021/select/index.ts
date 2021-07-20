@@ -1,5 +1,10 @@
 /* eslint-disable no-undef */
 ///<reference types="@i3yun/viewer" />
+
+/**
+ * 写完ts，别忘了tsc 本文件以生成js文件
+ */
+
 /**
  * DOM界面操作
  */
