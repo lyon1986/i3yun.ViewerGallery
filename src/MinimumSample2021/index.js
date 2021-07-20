@@ -7,7 +7,7 @@ let viewer;
 //   'http://api.aisanwei.cn/api/viewer.amarkups/dist/extensions/Sippreep.Extensions.AMarkups.js',
 // );
 Sippreep.Initializer().then(() => {
-  let htmlDivElement = document.getElementById('SippreepViewer');
+  let htmlDivElement = document.getElementById('viewer-element');
   viewer = new Sippreep.Viewing.Viewer3D(htmlDivElement);
   // viewer = new Sippreep.Viewing.GuiViewer3D(htmlDivElement);
   const errorCode = viewer.start();
@@ -17,7 +17,6 @@ Sippreep.Initializer().then(() => {
   // }
   // console.log('Initialization complete, loading a model next...');
 
-  const url1 = 'http://api.aisanwei.cn/api/Storge/Viewable?ID=';
 
   /**
    * url2 这部分数据是从`转换webApi接口`的返回中获取的
@@ -30,18 +29,12 @@ Sippreep.Initializer().then(() => {
    * ```
    *
    */
-  let url2 = 'jobs/ef819df5-ae58-4cb5-b558-61c49f75b6d8/output/main.hf';
-  viewer.loadModel(url1 + url2, {}, onSucceed, onFailed);
-  function onSucceed(model) {
+  const modelUrl1 = 'http://api.aisanwei.cn/api/Storge/Viewable?ID=';
+  let modelUrl2 = 'jobs/ef819df5-ae58-4cb5-b558-61c49f75b6d8/output/main.hf';
+  viewer.loadModel(modelUrl1 + modelUrl2, {/* 加载时参数 */ }, (m) => {
     console.log('模型加载成功');
-    /**
-     * 您的业务内容一般写在这里（特殊情况如需要控制加载模型的相关，请与我们联系）
-     */
-    // viewer.getToolbar(false).getControl(`settingsTools`).setVisible(false);
-    // 加载插件
-    // viewer.loadExtension('Sippreep.Extensions.AMarkups.AMarkupsExtension');
-  }
-  function onFailed(error) {
+    // 业务代码
+  }, (error) => {
     console.warn(error);
-  }
+  });
 });
