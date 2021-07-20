@@ -5,31 +5,45 @@ namespace demo2021color {
    * DOM界面操作
    */
   class DomView {
-    private hint: HTMLElement
-    fitToViewButton: HTMLElement
+    unvisibleButton: HTMLElement
+    offButton: HTMLElement
+    changeColorButton: HTMLElement
+    resetButton: HTMLElement
     constructor() {
-      this.fitToViewButton = document.createElement('button')
-      this.fitToViewButton.style.zIndex = '99'
-      this.fitToViewButton.style.position = 'relative'
-      this.fitToViewButton.style.fontSize = 'xxx-large'
-      this.fitToViewButton.innerText = '定位部件'
-      document.body.appendChild(this.fitToViewButton)
+      this.unvisibleButton = document.createElement('button')
+      this.unvisibleButton.style.zIndex = '99'
+      this.unvisibleButton.style.position = 'relative'
+      this.unvisibleButton.style.fontSize = 'xxx-large'
+      this.unvisibleButton.innerText = '阴影'
+      document.body.appendChild(this.unvisibleButton)
 
-      this.hint = document.createElement('label')
-      this.hint.style.zIndex = '99'
-      this.hint.style.position = 'relative'
-      this.hint.style.fontSize = 'xxx-large'
-      this.hint.innerText = 'hint'
-      document.body.appendChild(this.hint)
-    }
-    setText(t: string) {
-      this.hint.innerText = '选择回调： 模型部件 ID = ' + t
-    }
+      this.offButton = document.createElement('button')
+      this.offButton.style.zIndex = '99'
+      this.offButton.style.position = 'relative'
+      this.offButton.style.fontSize = 'xxx-large'
+      this.offButton.innerText = '隐藏'
+      document.body.appendChild(this.offButton)
 
+      this.changeColorButton = document.createElement('button')
+      this.changeColorButton.style.zIndex = '99'
+      this.changeColorButton.style.position = 'relative'
+      this.changeColorButton.style.fontSize = 'xxx-large'
+      this.changeColorButton.innerText = '变色'
+      document.body.appendChild(this.changeColorButton)
+
+      this.resetButton = document.createElement('button')
+      this.resetButton.style.zIndex = '99'
+      this.resetButton.style.position = 'relative'
+      this.resetButton.style.fontSize = 'xxx-large'
+      this.resetButton.innerText = '还原'
+      document.body.appendChild(this.resetButton)
+
+    }
   }
   class Bussiness {
     viewer!: Sippreep.Viewing.Viewer3D
     dom!: DomView
+    selectedArray: number[] = []
     constructor() {
     }
     setViewer(v: Sippreep.Viewing.Viewer3D): Bussiness {
@@ -43,10 +57,30 @@ namespace demo2021color {
     listen() {
       this.viewer.addEventListener(Sippreep.Viewing.SELECTION_CHANGED_EVENT, (event) => {
         console.log(event)
-        this.dom.setText(event.dbIdArray.toString())
-        this.dom.fitToViewButton.onclick = () => {
-          this.viewer.fitToView(event.dbIdArray, undefined, true)
+        this.selectedArray = event.dbIdArray
+        this.dom.resetButton.onclick = () => {
+          this.viewer.clearThemingColors(this.viewer.model)
+          this.viewer.model.visibilityManager.setAllVisibility(true)
         }
+        this.dom.unvisibleButton.onclick = () => {
+          for (const d of this.selectedArray) {
+            this.viewer.model.visibilityManager.toggleVisibility(d)
+            // this.viewer.model.visibilityManager.hide(d)
+            // this.viewer.model.visibilityManager.show(d)
+          }
+        }
+        this.dom.offButton.onclick = () => {
+          //model.visibilityManager.setNodeOff(668,true)
+
+        }
+        this.dom.changeColorButton.onclick = () => {
+          for (const d of this.selectedArray) {
+            this.viewer.setThemingColor(d, new THREE.Vector4(Math.random(), Math.random(), Math.random(), Math.random()))
+          }
+        }
+
+
+
       })
     }
   }

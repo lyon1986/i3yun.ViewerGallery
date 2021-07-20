@@ -7,26 +7,36 @@ var demo2021color;
      */
     var DomView = /** @class */ (function () {
         function DomView() {
-            this.fitToViewButton = document.createElement('button');
-            this.fitToViewButton.style.zIndex = '99';
-            this.fitToViewButton.style.position = 'relative';
-            this.fitToViewButton.style.fontSize = 'xxx-large';
-            this.fitToViewButton.innerText = '定位部件';
-            document.body.appendChild(this.fitToViewButton);
-            this.hint = document.createElement('label');
-            this.hint.style.zIndex = '99';
-            this.hint.style.position = 'relative';
-            this.hint.style.fontSize = 'xxx-large';
-            this.hint.innerText = 'hinttt';
-            document.body.appendChild(this.hint);
+            this.unvisibleButton = document.createElement('button');
+            this.unvisibleButton.style.zIndex = '99';
+            this.unvisibleButton.style.position = 'relative';
+            this.unvisibleButton.style.fontSize = 'xxx-large';
+            this.unvisibleButton.innerText = '切换成阴影';
+            document.body.appendChild(this.unvisibleButton);
+            this.offButton = document.createElement('button');
+            this.offButton.style.zIndex = '99';
+            this.offButton.style.position = 'relative';
+            this.offButton.style.fontSize = 'xxx-large';
+            this.offButton.innerText = '切换显示';
+            document.body.appendChild(this.offButton);
+            this.changeColorButton = document.createElement('button');
+            this.changeColorButton.style.zIndex = '99';
+            this.changeColorButton.style.position = 'relative';
+            this.changeColorButton.style.fontSize = 'xxx-large';
+            this.changeColorButton.innerText = '切换颜色';
+            document.body.appendChild(this.changeColorButton);
+            this.clearColorButton = document.createElement('button');
+            this.clearColorButton.style.zIndex = '99';
+            this.clearColorButton.style.position = 'relative';
+            this.clearColorButton.style.fontSize = 'xxx-large';
+            this.clearColorButton.innerText = '清除自定义的颜色';
+            document.body.appendChild(this.clearColorButton);
         }
-        DomView.prototype.setText = function (t) {
-            this.hint.innerText = '选择回调： 模型部件 ID = ' + t;
-        };
         return DomView;
     }());
     var Bussiness = /** @class */ (function () {
         function Bussiness() {
+            this.selectedArray = [];
         }
         Bussiness.prototype.setViewer = function (v) {
             this.viewer = v;
@@ -40,9 +50,9 @@ var demo2021color;
             var _this = this;
             this.viewer.addEventListener(Sippreep.Viewing.SELECTION_CHANGED_EVENT, function (event) {
                 console.log(event);
-                _this.dom.setText(event.dbIdArray.toString());
-                _this.dom.fitToViewButton.onclick = function () {
-                    _this.viewer.fitToView(event.dbIdArray, undefined, true);
+                _this.selectedArray = event.dbIdArray;
+                _this.dom.unvisibleButton.onclick = function () {
+                    _this.viewer.model.visibilityManager.toggleVisibility(_this.selectedArray);
                 };
             });
         };
