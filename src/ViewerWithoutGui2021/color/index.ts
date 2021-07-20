@@ -21,7 +21,7 @@ namespace demo2021color {
       this.offButton.style.zIndex = '99'
       this.offButton.style.position = 'relative'
       this.offButton.style.fontSize = 'xxx-large'
-      this.offButton.innerText = '隐藏'
+      this.offButton.innerText = '关闭'
       document.body.appendChild(this.offButton)
 
       this.changeColorButton = document.createElement('button')
@@ -44,6 +44,7 @@ namespace demo2021color {
     viewer!: Sippreep.Viewing.Viewer3D
     dom!: DomView
     selectedArray: number[] = []
+    isOff: Set<number> = new Set()
     constructor() {
     }
     setViewer(v: Sippreep.Viewing.Viewer3D): Bussiness {
@@ -57,10 +58,15 @@ namespace demo2021color {
     listen() {
       this.viewer.addEventListener(Sippreep.Viewing.SELECTION_CHANGED_EVENT, (event) => {
         console.log(event)
-        this.selectedArray = event.dbIdArray
+        this.selectedArray = (event.dbIdArray.length > 0) ? event.dbIdArray : this.selectedArray
+
         this.dom.resetButton.onclick = () => {
           this.viewer.clearThemingColors(this.viewer.model)
           this.viewer.model.visibilityManager.setAllVisibility(true)
+          this.isOff.forEach((v) => {
+            this.viewer.model.visibilityManager.setNodeOff(v, false);
+          })
+          this.isOff = new Set()
         }
         this.dom.unvisibleButton.onclick = () => {
           for (const d of this.selectedArray) {
@@ -70,16 +76,22 @@ namespace demo2021color {
           }
         }
         this.dom.offButton.onclick = () => {
-          //model.visibilityManager.setNodeOff(668,true)
+          for (const d of this.selectedArray) {
+            if (this.isOff.has(d)) {
+              this.viewer.model.visibilityManager.setNodeOff(d, false);
+              this.isOff.delete(d)
+            } else {
+              this.viewer.model.visibilityManager.setNodeOff(d, true);
+              this.isOff.add(d)
+            }
+          }
 
         }
         this.dom.changeColorButton.onclick = () => {
           for (const d of this.selectedArray) {
-            this.viewer.setThemingColor(d, new THREE.Vector4(Math.random(), Math.random(), Math.random(), Math.random()))
+            this.viewer.setThemingColor(d, new THREE.Vector4(Math.random(), Math.random(), Math.random(), 0.5 + 0.5 * Math.random()))
           }
         }
-
-
 
       })
     }

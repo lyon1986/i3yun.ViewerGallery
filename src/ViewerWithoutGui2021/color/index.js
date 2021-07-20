@@ -11,32 +11,33 @@ var demo2021color;
             this.unvisibleButton.style.zIndex = '99';
             this.unvisibleButton.style.position = 'relative';
             this.unvisibleButton.style.fontSize = 'xxx-large';
-            this.unvisibleButton.innerText = '切换成阴影';
+            this.unvisibleButton.innerText = '阴影';
             document.body.appendChild(this.unvisibleButton);
             this.offButton = document.createElement('button');
             this.offButton.style.zIndex = '99';
             this.offButton.style.position = 'relative';
             this.offButton.style.fontSize = 'xxx-large';
-            this.offButton.innerText = '切换显示';
+            this.offButton.innerText = '关闭';
             document.body.appendChild(this.offButton);
             this.changeColorButton = document.createElement('button');
             this.changeColorButton.style.zIndex = '99';
             this.changeColorButton.style.position = 'relative';
             this.changeColorButton.style.fontSize = 'xxx-large';
-            this.changeColorButton.innerText = '切换颜色';
+            this.changeColorButton.innerText = '变色';
             document.body.appendChild(this.changeColorButton);
-            this.clearColorButton = document.createElement('button');
-            this.clearColorButton.style.zIndex = '99';
-            this.clearColorButton.style.position = 'relative';
-            this.clearColorButton.style.fontSize = 'xxx-large';
-            this.clearColorButton.innerText = '清除自定义的颜色';
-            document.body.appendChild(this.clearColorButton);
+            this.resetButton = document.createElement('button');
+            this.resetButton.style.zIndex = '99';
+            this.resetButton.style.position = 'relative';
+            this.resetButton.style.fontSize = 'xxx-large';
+            this.resetButton.innerText = '还原';
+            document.body.appendChild(this.resetButton);
         }
         return DomView;
     }());
     var Bussiness = /** @class */ (function () {
         function Bussiness() {
             this.selectedArray = [];
+            this.isOff = new Set();
         }
         Bussiness.prototype.setViewer = function (v) {
             this.viewer = v;
@@ -50,9 +51,41 @@ var demo2021color;
             var _this = this;
             this.viewer.addEventListener(Sippreep.Viewing.SELECTION_CHANGED_EVENT, function (event) {
                 console.log(event);
-                _this.selectedArray = event.dbIdArray;
+                _this.selectedArray = (event.dbIdArray.length > 0) ? event.dbIdArray : _this.selectedArray;
+                _this.dom.resetButton.onclick = function () {
+                    _this.viewer.clearThemingColors(_this.viewer.model);
+                    _this.viewer.model.visibilityManager.setAllVisibility(true);
+                    _this.isOff.forEach(function (v) {
+                        _this.viewer.model.visibilityManager.setNodeOff(v, false);
+                    });
+                    _this.isOff = new Set();
+                };
                 _this.dom.unvisibleButton.onclick = function () {
-                    _this.viewer.model.visibilityManager.toggleVisibility(_this.selectedArray);
+                    for (var _i = 0, _a = _this.selectedArray; _i < _a.length; _i++) {
+                        var d = _a[_i];
+                        _this.viewer.model.visibilityManager.toggleVisibility(d);
+                        // this.viewer.model.visibilityManager.hide(d)
+                        // this.viewer.model.visibilityManager.show(d)
+                    }
+                };
+                _this.dom.offButton.onclick = function () {
+                    for (var _i = 0, _a = _this.selectedArray; _i < _a.length; _i++) {
+                        var d = _a[_i];
+                        if (_this.isOff.has(d)) {
+                            _this.viewer.model.visibilityManager.setNodeOff(d, false);
+                            _this.isOff["delete"](d);
+                        }
+                        else {
+                            _this.viewer.model.visibilityManager.setNodeOff(d, true);
+                            _this.isOff.add(d);
+                        }
+                    }
+                };
+                _this.dom.changeColorButton.onclick = function () {
+                    for (var _i = 0, _a = _this.selectedArray; _i < _a.length; _i++) {
+                        var d = _a[_i];
+                        _this.viewer.setThemingColor(d, new THREE.Vector4(Math.random(), Math.random(), Math.random(), 0.5 + 0.5 * Math.random()));
+                    }
                 };
             });
         };
