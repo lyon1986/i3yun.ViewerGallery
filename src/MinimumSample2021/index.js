@@ -7,9 +7,8 @@ let viewer;
 //   'http://api.aisanwei.cn/api/viewer.amarkups/dist/extensions/Sippreep.Extensions.AMarkups.js',
 // );
 Sippreep.Initializer().then(() => {
-  let htmlDivElement = document.getElementById('viewer-element');
-  viewer = new Sippreep.Viewing.Viewer3D(htmlDivElement);
-  // viewer = new Sippreep.Viewing.GuiViewer3D(htmlDivElement);
+  viewer = new Sippreep.Viewing.Viewer3D(document.getElementById('viewer-element'));
+  // viewer = new Sippreep.Viewing.GuiViewer3D(document.getElementById('viewer-element'));
   const errorCode = viewer.start();
   // if (errorCode > 0) {
   //   console.error('Failed to create a Viewer: WebGL not supported.');
